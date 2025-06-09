@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
   
@@ -176,11 +176,7 @@
         <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="01-weiner-process.html">Understanding Weiner Process</a></li>
 <li class="toctree-l1"><a class="reference internal" href="02-Diffusion%20models%20Score%20Models%20ETC.html">Introduction</a></li>
-
-
 <li class="toctree-l1"><a class="reference internal" href="03-Toward%20Falsifying%20Causal%20Graphs%20Using%20a%20Permutation-Based%20Test.html">Introduction</a></li>
-
-
 </ul>
 
     </div>
@@ -377,26 +373,35 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">First time</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#folder-structure">1. Folder structure:</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-your-note-book-cd-into-blogs-outside-jupyter-book-build-mybookname">2. build your note book, cd into blogs(outside): jupyter-book build mybookname/</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-a-repo-called-blogs-online-copy-all-the-files-inside-blogs-outside-in-local-into-github-repo-blogs-which-i-will-call-as-blogs-outside">3. create a repo called blogs online, copy all the files inside blogs(outside) in local into github repo blogs, which I will call as blogs(outside)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cd-into-blogs-outside-folder">4. cd into blogs(outside) folder</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#git-add">5. git add ./*</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#git-commit-m-adding-my-first-book">6. git commit -m “adding my first book!”</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#git-push">7. git push</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pip-install-ghp-import">8. pip install ghp-import</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-cmd-ghp-import-n-p-f-build-html-it-will-show-merge-and-pull-no-need-to-do-anything">9. run cmd:  <code class="docutils literal notranslate"><span class="pre">ghp-import</span> <span class="pre">-n</span> <span class="pre">-p</span> <span class="pre">-f</span> <span class="pre">_build/html</span></code> , It will show merge and pull. No need to do anything.</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#go-to-settings-pages">10. go to settings, Pages.</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#under-action-see-if-it-is-deployed">11. Under action see if it is deployed.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#steps">Steps</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#folder-structure">1. Folder structure:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#build-your-note-book-cd-into-blogs-outside-jupyter-book-build-blogs">2. build your note book, cd into blogs(outside): jupyter-book build blogs/</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-a-repo-called-blogs-online-copy-all-the-files-inside-blogs-outside-in-local-into-github-repo-blogs-which-i-will-call-as-blogs-outside">3. create a repo called blogs online, copy all the files inside blogs(outside) in local into github repo blogs, which I will call as blogs(outside)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cd-into-blogs-outside-folder">4. cd into blogs(outside) folder</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#git-add">5. git add ./*</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#git-commit-m-adding-my-first-book">6. git commit -m “adding my first book!”</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#git-push">7. git push</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pip-install-ghp-import">8. pip install ghp-import</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cd-into-blogs-inside-folder-run-cmd-ghp-import-n-p-f-build-html-it-will-show-merge-and-pull-no-need-to-do-anything">9. cd into  blogs(inside) folder, run cmd:  <code class="docutils literal notranslate"><span class="pre">ghp-import</span> <span class="pre">-n</span> <span class="pre">-p</span> <span class="pre">-f</span> <span class="pre">_build/html</span></code> , It will show merge and pull. No need to do anything.</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#go-to-settings-pages">10. go to settings, Pages.</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#under-action-see-if-it-is-deployed">11. Under action see if it is deployed.</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#second-time">Second time</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1. cd into blogs(outside) folder</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-your-note-book-jupyter-book-build-mybookname">2. build your note book: jupyter-book build mybookname/</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">3. git add ./*</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">4. git commit -m “adding my first book!”</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">5. git push</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-cmd-ghp-import-n-p-f-build-html">6. run cmd: ghp-import -n -p -f _build/html</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Steps</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">1. cd into blogs(outside) folder</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#delete-the-build-folder-inside-the-blogs-inside">2. delete the _build folder inside the blogs(inside)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#from-the-blogs-outside-build-your-note-book-jupyter-book-build-blogs">2. from the blogs(outside) build your note book: jupyter-book build blogs/</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cd-into-blogs-outside">3. cd into  blogs(outside)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">3. git add ./*</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">4. git commit -m “adding my first book!”</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">5. git push</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cd-into-blogs-inside-folder-run-cmd-ghp-import-n-p-f-build-html">6. cd into  blogs(inside) folder, run cmd: ghp-import -n -p -f _build/html</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">7. Under action see if it is deployed.</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -413,8 +418,10 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="first-time">
 <h1>First time<a class="headerlink" href="#first-time" title="Link to this heading">#</a></h1>
+<section id="steps">
+<h2>Steps<a class="headerlink" href="#steps" title="Link to this heading">#</a></h2>
 <section id="folder-structure">
-<h2>1. Folder structure:<a class="headerlink" href="#folder-structure" title="Link to this heading">#</a></h2>
+<h3>1. Folder structure:<a class="headerlink" href="#folder-structure" title="Link to this heading">#</a></h3>
 <ol class="arabic">
 <li><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>               blogs(outside)
                   -blogs(inside)
@@ -430,60 +437,73 @@ document.write(`
 </li>
 </ol>
 </section>
-<section id="build-your-note-book-cd-into-blogs-outside-jupyter-book-build-mybookname">
-<h2>2. build your note book, cd into blogs(outside): jupyter-book build mybookname/<a class="headerlink" href="#build-your-note-book-cd-into-blogs-outside-jupyter-book-build-mybookname" title="Link to this heading">#</a></h2>
+<section id="build-your-note-book-cd-into-blogs-outside-jupyter-book-build-blogs">
+<h3>2. build your note book, cd into blogs(outside): jupyter-book build blogs/<a class="headerlink" href="#build-your-note-book-cd-into-blogs-outside-jupyter-book-build-blogs" title="Link to this heading">#</a></h3>
 </section>
 <section id="create-a-repo-called-blogs-online-copy-all-the-files-inside-blogs-outside-in-local-into-github-repo-blogs-which-i-will-call-as-blogs-outside">
-<h2>3. create a repo called blogs online, copy all the files inside blogs(outside) in local into github repo blogs, which I will call as blogs(outside)<a class="headerlink" href="#create-a-repo-called-blogs-online-copy-all-the-files-inside-blogs-outside-in-local-into-github-repo-blogs-which-i-will-call-as-blogs-outside" title="Link to this heading">#</a></h2>
+<h3>3. create a repo called blogs online, copy all the files inside blogs(outside) in local into github repo blogs, which I will call as blogs(outside)<a class="headerlink" href="#create-a-repo-called-blogs-online-copy-all-the-files-inside-blogs-outside-in-local-into-github-repo-blogs-which-i-will-call-as-blogs-outside" title="Link to this heading">#</a></h3>
 </section>
 <section id="cd-into-blogs-outside-folder">
-<h2>4. cd into blogs(outside) folder<a class="headerlink" href="#cd-into-blogs-outside-folder" title="Link to this heading">#</a></h2>
+<h3>4. cd into blogs(outside) folder<a class="headerlink" href="#cd-into-blogs-outside-folder" title="Link to this heading">#</a></h3>
 </section>
 <section id="git-add">
-<h2>5. git add ./*<a class="headerlink" href="#git-add" title="Link to this heading">#</a></h2>
+<h3>5. git add ./*<a class="headerlink" href="#git-add" title="Link to this heading">#</a></h3>
 </section>
 <section id="git-commit-m-adding-my-first-book">
-<h2>6. git commit -m “adding my first book!”<a class="headerlink" href="#git-commit-m-adding-my-first-book" title="Link to this heading">#</a></h2>
+<h3>6. git commit -m “adding my first book!”<a class="headerlink" href="#git-commit-m-adding-my-first-book" title="Link to this heading">#</a></h3>
 </section>
 <section id="git-push">
-<h2>7. git push<a class="headerlink" href="#git-push" title="Link to this heading">#</a></h2>
+<h3>7. git push<a class="headerlink" href="#git-push" title="Link to this heading">#</a></h3>
 </section>
 <section id="pip-install-ghp-import">
-<h2>8. pip install ghp-import<a class="headerlink" href="#pip-install-ghp-import" title="Link to this heading">#</a></h2>
+<h3>8. pip install ghp-import<a class="headerlink" href="#pip-install-ghp-import" title="Link to this heading">#</a></h3>
 </section>
-<section id="run-cmd-ghp-import-n-p-f-build-html-it-will-show-merge-and-pull-no-need-to-do-anything">
-<h2>9. run cmd:  <code class="docutils literal notranslate"><span class="pre">ghp-import</span> <span class="pre">-n</span> <span class="pre">-p</span> <span class="pre">-f</span> <span class="pre">_build/html</span></code> , It will show merge and pull. No need to do anything.<a class="headerlink" href="#run-cmd-ghp-import-n-p-f-build-html-it-will-show-merge-and-pull-no-need-to-do-anything" title="Link to this heading">#</a></h2>
+<section id="cd-into-blogs-inside-folder-run-cmd-ghp-import-n-p-f-build-html-it-will-show-merge-and-pull-no-need-to-do-anything">
+<h3>9. cd into  blogs(inside) folder, run cmd:  <code class="docutils literal notranslate"><span class="pre">ghp-import</span> <span class="pre">-n</span> <span class="pre">-p</span> <span class="pre">-f</span> <span class="pre">_build/html</span></code> , It will show merge and pull. No need to do anything.<a class="headerlink" href="#cd-into-blogs-inside-folder-run-cmd-ghp-import-n-p-f-build-html-it-will-show-merge-and-pull-no-need-to-do-anything" title="Link to this heading">#</a></h3>
 </section>
 <section id="go-to-settings-pages">
-<h2>10. go to settings, Pages.<a class="headerlink" href="#go-to-settings-pages" title="Link to this heading">#</a></h2>
+<h3>10. go to settings, Pages.<a class="headerlink" href="#go-to-settings-pages" title="Link to this heading">#</a></h3>
 <ol class="arabic simple">
 <li><p>Under Source, select deploy from brach.</p></li>
 <li><p>Under branch select gh-pages, select /root and save.</p></li>
 </ol>
 </section>
 <section id="under-action-see-if-it-is-deployed">
-<h2>11. Under action see if it is deployed.<a class="headerlink" href="#under-action-see-if-it-is-deployed" title="Link to this heading">#</a></h2>
+<h3>11. Under action see if it is deployed.<a class="headerlink" href="#under-action-see-if-it-is-deployed" title="Link to this heading">#</a></h3>
+</section>
 </section>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="second-time">
 <h1>Second time<a class="headerlink" href="#second-time" title="Link to this heading">#</a></h1>
 <section id="id1">
-<h2>1. cd into blogs(outside) folder<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
-</section>
-<section id="build-your-note-book-jupyter-book-build-mybookname">
-<h2>2. build your note book: jupyter-book build mybookname/<a class="headerlink" href="#build-your-note-book-jupyter-book-build-mybookname" title="Link to this heading">#</a></h2>
-</section>
+<h2>Steps<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <section id="id2">
-<h2>3. git add ./*<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<h3>1. cd into blogs(outside) folder<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+</section>
+<section id="delete-the-build-folder-inside-the-blogs-inside">
+<h3>2. delete the _build folder inside the blogs(inside)<a class="headerlink" href="#delete-the-build-folder-inside-the-blogs-inside" title="Link to this heading">#</a></h3>
+</section>
+<section id="from-the-blogs-outside-build-your-note-book-jupyter-book-build-blogs">
+<h3>2. from the blogs(outside) build your note book: jupyter-book build blogs/<a class="headerlink" href="#from-the-blogs-outside-build-your-note-book-jupyter-book-build-blogs" title="Link to this heading">#</a></h3>
+</section>
+<section id="cd-into-blogs-outside">
+<h3>3. cd into  blogs(outside)<a class="headerlink" href="#cd-into-blogs-outside" title="Link to this heading">#</a></h3>
 </section>
 <section id="id3">
-<h2>4. git commit -m “adding my first book!”<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<h3>3. git add ./*<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 </section>
 <section id="id4">
-<h2>5. git push<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<h3>4. git commit -m “adding my first book!”<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 </section>
-<section id="run-cmd-ghp-import-n-p-f-build-html">
-<h2>6. run cmd: ghp-import -n -p -f _build/html<a class="headerlink" href="#run-cmd-ghp-import-n-p-f-build-html" title="Link to this heading">#</a></h2>
+<section id="id5">
+<h3>5. git push<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+</section>
+<section id="cd-into-blogs-inside-folder-run-cmd-ghp-import-n-p-f-build-html">
+<h3>6. cd into  blogs(inside) folder, run cmd: ghp-import -n -p -f _build/html<a class="headerlink" href="#cd-into-blogs-inside-folder-run-cmd-ghp-import-n-p-f-build-html" title="Link to this heading">#</a></h3>
+</section>
+<section id="id6">
+<h3>7. Under action see if it is deployed.<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+</section>
 </section>
 </section>
 
@@ -534,26 +554,35 @@ document.write(`
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">First time</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#folder-structure">1. Folder structure:</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-your-note-book-cd-into-blogs-outside-jupyter-book-build-mybookname">2. build your note book, cd into blogs(outside): jupyter-book build mybookname/</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-a-repo-called-blogs-online-copy-all-the-files-inside-blogs-outside-in-local-into-github-repo-blogs-which-i-will-call-as-blogs-outside">3. create a repo called blogs online, copy all the files inside blogs(outside) in local into github repo blogs, which I will call as blogs(outside)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cd-into-blogs-outside-folder">4. cd into blogs(outside) folder</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#git-add">5. git add ./*</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#git-commit-m-adding-my-first-book">6. git commit -m “adding my first book!”</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#git-push">7. git push</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pip-install-ghp-import">8. pip install ghp-import</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-cmd-ghp-import-n-p-f-build-html-it-will-show-merge-and-pull-no-need-to-do-anything">9. run cmd:  <code class="docutils literal notranslate"><span class="pre">ghp-import</span> <span class="pre">-n</span> <span class="pre">-p</span> <span class="pre">-f</span> <span class="pre">_build/html</span></code> , It will show merge and pull. No need to do anything.</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#go-to-settings-pages">10. go to settings, Pages.</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#under-action-see-if-it-is-deployed">11. Under action see if it is deployed.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#steps">Steps</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#folder-structure">1. Folder structure:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#build-your-note-book-cd-into-blogs-outside-jupyter-book-build-blogs">2. build your note book, cd into blogs(outside): jupyter-book build blogs/</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-a-repo-called-blogs-online-copy-all-the-files-inside-blogs-outside-in-local-into-github-repo-blogs-which-i-will-call-as-blogs-outside">3. create a repo called blogs online, copy all the files inside blogs(outside) in local into github repo blogs, which I will call as blogs(outside)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cd-into-blogs-outside-folder">4. cd into blogs(outside) folder</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#git-add">5. git add ./*</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#git-commit-m-adding-my-first-book">6. git commit -m “adding my first book!”</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#git-push">7. git push</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pip-install-ghp-import">8. pip install ghp-import</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cd-into-blogs-inside-folder-run-cmd-ghp-import-n-p-f-build-html-it-will-show-merge-and-pull-no-need-to-do-anything">9. cd into  blogs(inside) folder, run cmd:  <code class="docutils literal notranslate"><span class="pre">ghp-import</span> <span class="pre">-n</span> <span class="pre">-p</span> <span class="pre">-f</span> <span class="pre">_build/html</span></code> , It will show merge and pull. No need to do anything.</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#go-to-settings-pages">10. go to settings, Pages.</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#under-action-see-if-it-is-deployed">11. Under action see if it is deployed.</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#second-time">Second time</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1. cd into blogs(outside) folder</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-your-note-book-jupyter-book-build-mybookname">2. build your note book: jupyter-book build mybookname/</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">3. git add ./*</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">4. git commit -m “adding my first book!”</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">5. git push</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-cmd-ghp-import-n-p-f-build-html">6. run cmd: ghp-import -n -p -f _build/html</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Steps</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">1. cd into blogs(outside) folder</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#delete-the-build-folder-inside-the-blogs-inside">2. delete the _build folder inside the blogs(inside)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#from-the-blogs-outside-build-your-note-book-jupyter-book-build-blogs">2. from the blogs(outside) build your note book: jupyter-book build blogs/</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cd-into-blogs-outside">3. cd into  blogs(outside)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">3. git add ./*</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">4. git commit -m “adding my first book!”</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">5. git push</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cd-into-blogs-inside-folder-run-cmd-ghp-import-n-p-f-build-html">6. cd into  blogs(inside) folder, run cmd: ghp-import -n -p -f _build/html</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">7. Under action see if it is deployed.</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
