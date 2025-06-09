@@ -30,3 +30,4 @@
 ### 4. git commit -m "adding my first book!"
 ### 5. git push
 ### 6. cd into  blogs(inside) folder, run cmd: ghp-import -n -p -f _build/html
+### 7. Under action see if it is deployed.
