@@ -1,3 +1,3 @@
 # Blogs Landing Page
 
-A collection of my blogs based on my learnings.
+A collection of my blogs based on my learning!!
