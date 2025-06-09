@@ -35,3 +35,5 @@
 ### 5. git push
 ### 6. cd into  blogs(inside) folder, run cmd: ghp-import -n -p -f _build/html
 ### 7. Under action see if it is deployed.
+
+# If you face an problem check the build error. I once changed the config file etc to modify the github actions flow using cockied cutter. Instead of this, follow the instructions in jupyter book and download the sample notebook and modify it accordingly.

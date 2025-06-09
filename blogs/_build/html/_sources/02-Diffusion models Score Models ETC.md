@@ -1,4 +1,4 @@
-# Introduction
+# Viewing Diffusion, Score, Rectified flow, Heirrachical VAEs From The Same Lens
 
 This blog contains the basics, derivations, intuition and idea behind diffusion models, score based models, Heirrachical VAEs and rectified flow. I have also explained how these formulations relate to one another and comes under the same umberala. I will start with each formulation independently and at the end we will see how all of these fall under the same umberela. 
 

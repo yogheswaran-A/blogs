@@ -1,4 +1,4 @@
-# Introduction
+# 03-Toward Falsifying Causal Graphs Using a Permutation-Based Test
 
 This is about the paper [Toward Falsifying Causal Graphs Using a Permutation-Based Test](https://arxiv.org/abs/2305.09565). This is a my notes on what question this paper aims to solve and how.
 
