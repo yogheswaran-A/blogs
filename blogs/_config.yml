@@ -1,6 +1,7 @@
 # Book settings
 # Learn more at https://jupyterbook.org/customize/config.html
-
+# git push
+# run ghp-import -n -p -f _build/html
 title: "Blog"
 author: Yoghes and The Internet
 copyright: "2025"
