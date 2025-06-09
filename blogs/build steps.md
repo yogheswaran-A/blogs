@@ -11,7 +11,7 @@
                         - requirements.txt
                         - others
 
-### 2. build your note book, cd into blogs(outside): jupyter-book build blogs/
+### 2. build your note book, cd into blogs(outside): jupyter-book build blogs/ , remember if you are re-runing this command make sure to delete the _build folder
 ### 3. create a repo called blogs online, copy all the files inside blogs(outside) in local into github repo blogs, which I will call as blogs(outside)
 ### 4. cd into blogs(outside) folder
 ### 5. git add ./*
