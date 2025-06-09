@@ -17,7 +17,7 @@
 ### 6. git commit -m "adding my first book!"
 ### 7. git push
 ### 8. pip install ghp-import
-### 9. run cmd:  ```ghp-import -n -p -f _build/html``` , It will show merge and pull. No need to do anything.
+### 9. cd into  blogs(inside) folder, run cmd:  ```ghp-import -n -p -f _build/html``` , It will show merge and pull. No need to do anything.
 ### 10. go to settings, Pages.
 1) Under Source, select deploy from brach. 
 2) Under branch select gh-pages, select /root and save.
@@ -29,4 +29,4 @@
 ### 3. git add ./*
 ### 4. git commit -m "adding my first book!"
 ### 5. git push
-### 6. run cmd: ghp-import -n -p -f _build/html
+### 6. cd into  blogs(inside) folder, run cmd: ghp-import -n -p -f _build/html
