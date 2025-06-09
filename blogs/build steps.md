@@ -1,4 +1,5 @@
 # First time
+## Steps
 ### 1. Folder structure: 
 1.                    blogs(outside)
                          -blogs(inside)
@@ -10,7 +11,7 @@
                         - requirements.txt
                         - others
 
-### 2. build your note book, cd into blogs(outside): jupyter-book build mybookname/
+### 2. build your note book, cd into blogs(outside): jupyter-book build blogs/
 ### 3. create a repo called blogs online, copy all the files inside blogs(outside) in local into github repo blogs, which I will call as blogs(outside)
 ### 4. cd into blogs(outside) folder
 ### 5. git add ./*
@@ -24,8 +25,11 @@
 ### 11. Under action see if it is deployed.
 
 # Second time
+## Steps
 ### 1. cd into blogs(outside) folder
-### 2. build your note book: jupyter-book build mybookname/
+### 2. delete the _build folder inside the blogs(inside)
+### 2. from the blogs(outside) build your note book: jupyter-book build blogs/
+### 3. cd into  blogs(outside)
 ### 3. git add ./*
 ### 4. git commit -m "adding my first book!"
 ### 5. git push
