@@ -1,0 +1,644 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Understanding Weiner Process &#8212; Blog</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '01-weiner-process';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Instruction Dispatch and Memory" href="02-instruction-dispatch-and-memory.html" />
+    <link rel="prev" title="Blogs Landing Page" href="00-landing-page.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="00-landing-page.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Blog</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="00-landing-page.html">
+                    Blogs Landing Page
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Understanding Weiner Process</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02-instruction-dispatch-and-memory.html">Instruction Dispatch and Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03-flash-attention-I.html">Flash Attention - I</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-flash-attention-II.html">Flash Attention - II</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/yogheswaran-a/blogs" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/yogheswaran-a/blogs/issues/new?title=Issue%20on%20page%20%2F01-weiner-process.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/01-weiner-process.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Understanding Weiner Process</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">Motivation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#weiner-process">Weiner Process</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#probability-spaces-and-random-variables">Probability Spaces And Random Variables</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="understanding-weiner-process">
+<h1>Understanding Weiner Process<a class="headerlink" href="#understanding-weiner-process" title="Link to this heading">#</a></h1>
+<section id="motivation">
+<h2>Motivation<a class="headerlink" href="#motivation" title="Link to this heading">#</a></h2>
+<p>I wrote this blog as I was trying to understand the math behind the diffusion model.Though one can understand the algorithm of differernt types of formulation under diffusion models such as herirachical VAE, Score based models, Rectiflow, flow models without knowing much about SDE, to understand in detail why they all fall under the same category I beleive a deeper understanding of weineer process, OU process is needed, especaily the stochastic calculas which is the key to Ito’s lemma, forward and backward equations.<br />
+In this section a brief informal intro to  wiener process and why stocastic calculas is provided and in the later section a formal definition is tried to be given.</p>
+<section id="weiner-process">
+<h3>Weiner Process<a class="headerlink" href="#weiner-process" title="Link to this heading">#</a></h3>
+<p>Informally we can define stocashtic process to be a collection of random varibales <span class="math notranslate nohighlight">\(\{X_1 ,X_1,X_2,...\}\)</span> indexed by <span class="math notranslate nohighlight">\(t\)</span> (mostly time). At each time <span class="math notranslate nohighlight">\(t\)</span> the value is defined by the value <span class="math notranslate nohighlight">\(X_t\)</span>.  For example consider a ball moving in space at time <span class="math notranslate nohighlight">\(t\)</span>, if the position(<span class="math notranslate nohighlight">\(s_t\)</span>) of the ball after a time <span class="math notranslate nohighlight">\(dt\)</span> is influenced by a random variable <span class="math notranslate nohighlight">\(\epsilon_t\)</span>, the position at time <span class="math notranslate nohighlight">\(t + dt\)</span> would be random. The ball would be moving randomly in space, for each infinitesimally time <span class="math notranslate nohighlight">\(dt\)</span> the change in position would be described by <span class="math notranslate nohighlight">\(\epsilon_t\)</span>. That is:</p>
+<div class="math notranslate nohighlight">
+\[
+ds_t = \epsilon_t * dt
+\]</div>
+<p>Notice that unlike normal ODE, it is hard to define the integration of such a process. At each step <span class="math notranslate nohighlight">\(dt\)</span> the change is random, so you cannot form a classical Riemann sum in the usual way, each increment <span class="math notranslate nohighlight">\(\epsilon_t\)</span> * <span class="math notranslate nohighlight">\(dt\)</span> is a random kick and the path <span class="math notranslate nohighlight">\(s_t\)</span>​ is almost surely nowhere differentiable. To make sense of:</p>
+<div class="math notranslate nohighlight">
+\[
+s_t  =  s_0 + \int ϵ_t dt
+\]</div>
+<p>we need to <strong>stochastic calculas</strong>. To see the probability  distribution of positions at a given time step, where the ball might end up (final  distribution), how the trajectory evolves for all of this we need stochastic calculas.<br />
+Morever, when we model a ball’s random motion, we’re really looking at an uncountable collection of random variables, one for each instant in a continuous time interval. In other words, each possible trajectory is a function   <span class="math notranslate nohighlight">\(s ⁣:[0,T]→R\)</span>
+and there are uncountably many such functions. Moreover, each trajectory itself involves uncountably many infinitesimal time steps. Because of this double infinity (uncountably many paths, each with uncountably many increments), the naïve, undergraduate definition of probability assign a number to every subset of outcomes breaks down. If one tried to give every possible subset of <span class="math notranslate nohighlight">\(R\)</span> (or of the space of trajectories) a probability, one would immediately run into paradoxes like Banach–Tarski: for example, Banach–Tarski shows that you can partition a solid ball into finitely many non‐measurable pieces and reassemble them into two balls of the same volume as the original, so in this case assiging a probability of 1 to the initial solid ball won’t work. To avoid such contradictions, modern probability theory restricts attention to a carefully chosen sigma‐algebra of measurable sets (for instance, the Borel sigma‐algebra on <span class="math notranslate nohighlight">\(R\)</span>). In that way, every event we care about, the ball is in Region A at time <span class="math notranslate nohighlight">\(t\)</span>, its maximum displacement up to time <span class="math notranslate nohighlight">\(t\)</span> lies in some interval, etc., is guaranteed to be measurable, and every non‐measurable, paradoxical subset is simply excluded from the probability model. (We will start probability measure definition and other realted things to understad weiner process in the below sections).</p>
+<p>Let’s get back to</p>
+<div class="math notranslate nohighlight">
+\[
+ds_t = \epsilon_t * dt
+\]</div>
+<p>here if we chose <span class="math notranslate nohighlight">\(\epsilon\)</span> to be a gausian distribution with mean zero informally we will get a weiner process (<span class="math notranslate nohighlight">\(W_t\)</span>).</p>
+<p>A Wiener process <span class="math notranslate nohighlight">\(W_t\)</span>​ is a continuous-time stochastic process with the following properties:</p>
+<ol class="arabic simple">
+<li><p><span class="math notranslate nohighlight">\(W(0) = 0\)</span>. Weiner process starts with zero as the intial condition.</p></li>
+<li><p>Time correlation is zero: The changes in the process over non-overlapping time intervals are independent.</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[ C[W_{t+\tau} - W_t, W_t] = 0 \quad \text{for } \tau &gt; 0  \]</div>
+<div class="math notranslate nohighlight">
+\[
+C[W_{t+\tau} - W_t, W_t] = \lim_{T\to\infty} \frac{1}{T} \int_{0}^{T} W_t * (W_{t+\tau} - W_t)   dt \quad = 0  \quad \text{for } \tau &gt; 0
+\]</div>
+<ol class="arabic simple" start="3">
+<li><p>Gaussian increments: The change <span class="math notranslate nohighlight">\(W_{t+u} − W_t\)</span>​ is normally distributed.</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[ E[W_{t_{i+1}} - W_{t_i}] = 0 \quad \text{and} \]</div>
+<div class="math notranslate nohighlight">
+\[ \text{Var}[W_{t_{i+1}} - W_{t_i}] = t_{i+1} - t_i \]</div>
+<ol class="arabic simple" start="4">
+<li><p>Continuous paths: The process has continuous paths in time. There is no discontiuity in the paths.</p></li>
+</ol>
+<p>The stochastic equation one defined below is encountered more in computer science(rectified flow), physics and finance. We will see how to solve such processes.</p>
+<div class="math notranslate nohighlight">
+\[ dX(t) = \alpha(X,t)dt + \beta(X,t)dW_t \]</div>
+<p>where, <span class="math notranslate nohighlight">\(\alpha(X,t)\)</span> represents the <strong>drift term</strong>, <span class="math notranslate nohighlight">\(\beta(X,t)\)</span> is the <strong>diffusion term</strong>, and <span class="math notranslate nohighlight">\(W_t\)</span> represents <strong>weiner process</strong>. This equation describes how a system’s state <span class="math notranslate nohighlight">\(X(t)\)</span> evolves under both deterministic forces and random fluctuations.</p>
+</section>
+</section>
+<section id="probability-spaces-and-random-variables">
+<h2>Probability Spaces And Random Variables<a class="headerlink" href="#probability-spaces-and-random-variables" title="Link to this heading">#</a></h2>
+<p>As discussed above we need measure theoretic definition of probability to avoid getting into problems. Lets start with defining sigma algebra which is kinda similar to event space.</p>
+<hr class="docutils" />
+<p><strong>Definition of a σ-algebra</strong></p>
+<p>Let <span class="math notranslate nohighlight">\(\Omega\)</span> be a non-empty set, and let <span class="math notranslate nohighlight">\(\mathcal{F}\)</span> be a collection of subsets of <span class="math notranslate nohighlight">\(\Omega\)</span>.</p>
+<p>We say that <span class="math notranslate nohighlight">\(\mathcal{F}\)</span> is a <strong><span class="math notranslate nohighlight">\(\sigma\)</span>-algebra</strong> if it satisfies the following three properties:</p>
+<ol class="arabic simple">
+<li><p><strong>The empty set belongs to <span class="math notranslate nohighlight">\(\mathcal{F}\)</span>:</strong>
+<span class="math notranslate nohighlight">\(\emptyset \in \mathcal{F}\)</span></p></li>
+<li><p><strong>Closed under complement:</strong>
+Whenever a set <span class="math notranslate nohighlight">\(A\)</span> belongs to <span class="math notranslate nohighlight">\(\mathcal{F}\)</span>, its complement <span class="math notranslate nohighlight">\(A^c\)</span> also belongs to <span class="math notranslate nohighlight">\(\mathcal{F}\)</span>.
+If <span class="math notranslate nohighlight">\(A \in \mathcal{F}\)</span>, then <span class="math notranslate nohighlight">\(A^c \in \mathcal{F}\)</span></p></li>
+<li><p><strong>Closed under countable unions:</strong>
+Whenever a sequence of sets <span class="math notranslate nohighlight">\(A_1, A_2, A_3, \ldots\)</span> belongs to <span class="math notranslate nohighlight">\(\mathcal{F}\)</span>, their union also belongs to <span class="math notranslate nohighlight">\(\mathcal{F}\)</span>.
+If <span class="math notranslate nohighlight">\(A_1, A_2, A_3, \ldots \in \mathcal{F}\)</span>, then
+<span class="math notranslate nohighlight">\(\bigcup_{n=1}^\infty A_n \in \mathcal{F}\)</span></p></li>
+</ol>
+<hr class="docutils" />
+<p>The elements of a σ-algebra are called <strong>measurable sets</strong>, and the pair (<strong>Ω</strong>, <strong>𝓕</strong>) defines a <strong>measurable space</strong>. Here <strong>Ω</strong> is like sample space, <em>𝓕</em> is like the events.</p>
+<p>Whenever we want to measure something( like probability) we want our event space <em>𝓕</em> which is the subset of <strong>Ω</strong> to be <strong>σ-algebra</strong> so that our measure won’t be ill-defined (we will see a example below). By defining our event space like this we are making sure that we add the individual parts of the event space we get a non-overlapping parts, like adding individual pieces of sphere to make up a unit volume.
+For finite event spaces we normally use the power set <span class="math notranslate nohighlight">\(2^Ω\)</span> as the event space which has all the properties defined above.</p>
+<p>Now lets define probability measure,</p>
+<hr class="docutils" />
+<p><strong>Definition of a Probability Measure</strong></p>
+<p>A <strong>probability measure</strong> <strong>P</strong> on an event space <strong>𝓕</strong> is a function that satisfies the following properties:</p>
+<ol class="arabic simple">
+<li><p><strong>Maps events to the unit interval:</strong>
+<span class="math notranslate nohighlight">\(P: \mathcal{F} \rightarrow [0, 1]\)</span></p></li>
+<li><p><strong>Returns 0 for the empty set and 1 for the entire space:</strong>
+<span class="math notranslate nohighlight">\(P(\emptyset) = 0\)</span> and <span class="math notranslate nohighlight">\(P(\Omega) = 1\)</span></p></li>
+<li><p><strong>Satisfies countable additivity:</strong><br />
+For any countable collection of pairwise disjoint events <span class="math notranslate nohighlight">\(\{E_i\}_{i \in I}\)</span> (i.e., <span class="math notranslate nohighlight">\(E_i \cap E_j = \emptyset\)</span> for <span class="math notranslate nohighlight">\(i \neq j\)</span>), their probabilities add up:</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[ P\left(\bigcup_{i \in I} E_i\right) = \sum_{i \in I} P(E_i) \]</div>
+<hr class="docutils" />
+<p>How does this new definition of sample space and probability measure help us? Lets look at The Banach–Tarski paradox, it roughly states that that:</p>
+<p><em>A solid sphere in 3D space can be decomposed into a finite number of disjoint subsets, which can be reassembled using only rotations and translations to form two identical spheres each the same size as the original.</em></p>
+<p>This seems to contradict our intuitive understanding of volume and conservation. How can one break one ball into parts and rearrange them into two identical balls? The sets involved in the Banach–Tarski paradox are non-measurable, they cannot be assigned a meaningful volume using any countably additive measure like Lebesgue measure.</p>
+<p>So how σ-algebras and probability measures help, Let’s look at the definitions.</p>
+<ol class="arabic simple">
+<li><p>The σ-algebra is closed under countable unions and complements.</p></li>
+<li><p>This closure ensures internal consistency.</p></li>
+<li><p>Only subsets of Ω that live in this structure can be measured.</p></li>
+</ol>
+<p>The Banach–Tarski sets cannot be constructed within a σ-algebra like the Borel σ-algebra.And moe so,</p>
+<ol class="arabic simple" start="4">
+<li><p>The probability measure <span class="math notranslate nohighlight">\(P:F→[0,1]P:F→[0,1]\)</span> is only defined on measurable sets (those in <span class="math notranslate nohighlight">\(𝓕\)</span>).</p></li>
+<li><p>So, any event or set not in 𝓕 is simply not assigned a probability. It lies outside the scope of the theory.</p></li>
+</ol>
+<p>This avoids contradictions like “duplicating” probability mass, because one can only measure events where countable additivity holds.</p>
+<p>Banach–Tarski fails here because it relies on unmeasurable subsets (not in 𝓕). There’s no way to define a probability measure on all subsets of ℝ³ that:</p>
+<ol class="arabic simple">
+<li><p>Is countably additive, and</p></li>
+<li><p>Is rotation-invariant, and</p></li>
+<li><p>Assigns the expected volume to regular sets,</p></li>
+</ol>
+<p>without contradicting Banach–Tarski. Hope the above explanation gave some intuition.  Lets define random variable.</p>
+<hr class="docutils" />
+<p>A random variable <span class="math notranslate nohighlight">\(X\)</span> is a measurable function <span class="math notranslate nohighlight">\(X: \Omega \rightarrow E \subseteq \mathbb{R}\)</span> where:</p>
+<ol class="arabic">
+<li><p><span class="math notranslate nohighlight">\(X\)</span> must be part of a measurable space, <span class="math notranslate nohighlight">\((E, \mathcal{S})\)</span> (recall: <span class="math notranslate nohighlight">\(\mathcal{S}\)</span> defines a <span class="math notranslate nohighlight">\(\sigma\)</span>-algebra on the set <span class="math notranslate nohighlight">\(E\)</span>). For finite or countably infinite values of <span class="math notranslate nohighlight">\(X\)</span>, we generally use the powerset of <span class="math notranslate nohighlight">\(E\)</span>. Otherwise, we will typically use the <strong>Borel set</strong> for uncountably infinite sets (e.g., the real numbers).</p></li>
+<li><p>For all <span class="math notranslate nohighlight">\(s \in \mathcal{S}\)</span>, the pre-image of <span class="math notranslate nohighlight">\(s\)</span> under <span class="math notranslate nohighlight">\(X\)</span> is in <span class="math notranslate nohighlight">\(\mathcal{F}\)</span>. More precisely:</p>
+<div class="math notranslate nohighlight">
+\[ \{X \in s\} := \{\omega \in \Omega | X(\omega) \in s\} \in \mathcal{F} \]</div>
+</li>
+</ol>
+<hr class="docutils" />
+<p>Thanks</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="00-landing-page.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Blogs Landing Page</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="02-instruction-dispatch-and-memory.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Instruction Dispatch and Memory</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">Motivation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#weiner-process">Weiner Process</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#probability-spaces-and-random-variables">Probability Spaces And Random Variables</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Yoghes and The Internet
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
