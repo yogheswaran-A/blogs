@@ -11,7 +11,7 @@
                         - requirements.txt
                         - others
 
-### 2. build your note book, cd into blogs(outside): jupyter-book build blogs/
+### 2. build your note book, cd into blogs(outside): jupyter-book build blogs/ , remember if you are re-runing this command make sure to delete the _build folder
 ### 3. create a repo called blogs online, copy all the files inside blogs(outside) in local into github repo blogs, which I will call as blogs(outside)
 ### 4. cd into blogs(outside) folder
 ### 5. git add ./*
@@ -35,3 +35,5 @@
 ### 5. git push
 ### 6. cd into  blogs(inside) folder, run cmd: ghp-import -n -p -f _build/html
 ### 7. Under action see if it is deployed.
+
+# If you face an problem check the build error. I once changed the config file etc to modify the github actions flow using cockied cutter. Instead of this, follow the instructions in jupyter book and download the sample notebook and modify it accordingly.
