@@ -1,7 +1,7 @@
 # Book settings
 # Learn more at https://jupyterbook.org/customize/config.html
 
-title: "Blog"
+title: "Blogs"
 author: Yoghes and The Internet
 copyright: "2025"
 #logo: logo.png
@@ -31,3 +31,6 @@ repository:
 html:
   use_issues_button: true
   use_repository_button: true
+
+html_theme_options:  
+  collapse_navigation: true

@@ -2,7 +2,7 @@
 # Learn more at https://jupyterbook.org/customize/toc.html
 
 format: jb-book
-root: 00-landing-page
+root: 00_landing_page
 chapters:
-- file: 01-weiner-process
-- file: 02-Diffusion models Score Models ETC
+- file: 01_weiner_process
+- file: 02_Diffusion_models_Score_Models_ETC
