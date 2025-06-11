@@ -28,5 +28,3 @@ So what we need is to construct a stochastic process such that, as time progress
 Okay, now how do I construct the forward process? OU process generally have the following SDE:   
 $dX_t = \theta (\mu - X_t)\,dt + \sigma\,dW_t$   
 where $\theta$ is the momentum parameter that makes the OU process undulate around the mean. The mean parameter $\sigma$ sets the value around which the OU process moves in somewhat smooth arcs.
-
-

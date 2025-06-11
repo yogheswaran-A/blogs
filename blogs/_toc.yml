@@ -6,4 +6,3 @@ root: 00-landing-page
 chapters:
 - file: 01-weiner-process
 - file: 02-Diffusion models Score Models ETC
-- file: 03-Toward Falsifying Causal Graphs Using a Permutation-Based Test
