@@ -417,8 +417,8 @@ document.write(`
 <h1>SDE, Weiner Process, ITO’s Lemma and Reverse Time Equation<a class="headerlink" href="#sde-weiner-process-ito-s-lemma-and-reverse-time-equation" title="Link to this heading">#</a></h1>
 <section id="motivation">
 <h2>Motivation<a class="headerlink" href="#motivation" title="Link to this heading">#</a></h2>
-<p>I wrote this blog as I was trying to understand the math behind the diffusion model.Though one can understand the algorithm of differernt types of formulation under diffusion models such as herirachical VAE, Score based models, Rectiflow, flow models without knowing much about SDE, to understand in detail why they all fall under the same category I beleive a deeper understanding of weineer process, OU process is needed, especaily the stochastic calculas which is the key to ITO’s lemma, forward and backward equations.<br />
-In this section a brief informal intro to  wiener process and why stocastic calculas is provided and in the later section a formal definition is tried to be given.</p>
+<p>I wrote this blog as I was trying to understand the math behind the diffusion model.Though one can understand the algorithm of differernt types of formulation under diffusion models such as herirachical VAE, Score based models, Rectiflow, flow models without knowing much about SDE, to understand in detail why they all fall under the same category I beleive a deeper understanding of weineer process, stochastic calculas which is the key to ITO’s lemma, forward and backward equations etc are needed.<br />
+I believe this post is self contained and is a good intro to Stochastic calculas needed for diffusion models as it covers a wide range of topics from basic probability measure to solving ITO’s process with affine drift co-efficients(which is key for variance preserving, exploding cases) and reverse time equations and everything in between with proofs and intuitions. Lets get started.</p>
 </section>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
