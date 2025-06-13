@@ -396,9 +396,11 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ornsteinuhlenbeck-ou-process-solution">Ornstein–Uhlenbeck (OU) Process Solution</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mean-of-x-t">Mean of <span class="math notranslate nohighlight">\(X_t\)</span></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#variance-of-x-t">Variance of <span class="math notranslate nohighlight">\(X_t\)</span></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#code">Code</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#graph">Graph</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stochastic-process-with-affine-drift-co-efficients">Stochastic process With Affine Drift Co-efficients.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stochastic-process-with-affine-drift-co-efficients">Stochastic Process With Affine Drift Co-efficients.</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reverse-time-equation">Reverse Time Equation</a></li>
 </ul>
             </nav>
@@ -958,10 +960,10 @@ df(t,X(t)) = \left(\frac{\partial f}{\partial t} + \mu(t)\frac{\partial f}{\part
 <h2>ITO’s Product Rule<a class="headerlink" href="#ito-s-product-rule" title="Link to this heading">#</a></h2>
 <p>If we have two stochastic process <span class="math notranslate nohighlight">\(U(t)\)</span> and <span class="math notranslate nohighlight">\(V(t)\)</span>, where</p>
 <div class="math notranslate nohighlight">
-\[ dU(t) = \alpha(U,t)dt + \beta(U,t)dW_t \]</div>
+\[ dU(t) = \alpha_u(U,t)dt + \beta_u(U,t)dW_t \]</div>
 <p>and</p>
 <div class="math notranslate nohighlight">
-\[ dU(t) = \alpha(U,t)dt + \beta(U,t)dW_t \]</div>
+\[ dV(t) = \alpha_y(V,t)dt + \beta_v(V,t)dW_t \]</div>
 <p>then,</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1162,6 +1164,9 @@ The expectation of the stochastic integral <span class="math notranslate nohighl
 \[
 X_t \overset{d}{\to} \mathcal{N}\left(\mu, \frac{\sigma^2}{2\theta}\right)
 \]</div>
+</section>
+<section id="code">
+<h3>Code<a class="headerlink" href="#code" title="Link to this heading">#</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># simulating OU process</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -1193,11 +1198,14 @@ X_t \overset{d}{\to} \mathcal{N}\left(\mu, \frac{\sigma^2}{2\theta}\right)
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
+</section>
+<section id="graph">
+<h3>Graph<a class="headerlink" href="#graph" title="Link to this heading">#</a></h3>
 <p><img alt="img" src="_images/OU_simu.png" /></p>
 </section>
 </section>
 <section id="stochastic-process-with-affine-drift-co-efficients">
-<h2>Stochastic process With Affine Drift Co-efficients.<a class="headerlink" href="#stochastic-process-with-affine-drift-co-efficients" title="Link to this heading">#</a></h2>
+<h2>Stochastic Process With Affine Drift Co-efficients.<a class="headerlink" href="#stochastic-process-with-affine-drift-co-efficients" title="Link to this heading">#</a></h2>
 <p>In the last section we saw that OU process converges to a Normal distribution.</p>
 <p>This might make one ask a question, at any time <span class="math notranslate nohighlight">\(t\)</span>, can we have a <span class="math notranslate nohighlight">\(X_t\)</span> follow a normal distribution <span class="math notranslate nohighlight">\(X_t \sim \mathcal{N}\)</span> or <span class="math notranslate nohighlight">\(X_t/X_0 \sim \mathcal{N}\)</span>, as you might have expected the answer is YES, if the drift co-efficient is affine, i,e For a SDE</p>
 <div class="math notranslate nohighlight">
@@ -1397,9 +1405,11 @@ dX(t) = \left(\mu(t) - \sigma^2(t)\nabla_X \log p(X(t),t)\right)dt + \sigma(t)d\
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ornsteinuhlenbeck-ou-process-solution">Ornstein–Uhlenbeck (OU) Process Solution</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mean-of-x-t">Mean of <span class="math notranslate nohighlight">\(X_t\)</span></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#variance-of-x-t">Variance of <span class="math notranslate nohighlight">\(X_t\)</span></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#code">Code</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#graph">Graph</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stochastic-process-with-affine-drift-co-efficients">Stochastic process With Affine Drift Co-efficients.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stochastic-process-with-affine-drift-co-efficients">Stochastic Process With Affine Drift Co-efficients.</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reverse-time-equation">Reverse Time Equation</a></li>
 </ul>
   </nav></div>

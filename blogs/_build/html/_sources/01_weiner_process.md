@@ -632,11 +632,11 @@ Now lets look into OU process and ITO's lemma application.
 
 If we have two stochastic process $U(t)$ and $V(t)$, where 
 
-$$ dU(t) = \alpha(U,t)dt + \beta(U,t)dW_t $$
+$$ dU(t) = \alpha_u(U,t)dt + \beta_u(U,t)dW_t $$
 
 and
 
-$$ dU(t) = \alpha(U,t)dt + \beta(U,t)dW_t $$
+$$ dV(t) = \alpha_y(V,t)dt + \beta_v(V,t)dW_t $$
 
 then, 
 
@@ -868,6 +868,8 @@ $$
 X_t \overset{d}{\to} \mathcal{N}\left(\mu, \frac{\sigma^2}{2\theta}\right)
 $$
 
+### Code 
+
 ```python
 # simulating OU process
 
@@ -899,10 +901,11 @@ plt.xlabel("Time")
 plt.ylabel("X(t)")
 plt.show()
 ```
+### Graph
 
 ![img](data/01-weiner-process/OU_simu.png)
 
-## Stochastic process With Affine Drift Co-efficients.
+## Stochastic Process With Affine Drift Co-efficients.
 
 In the last section we saw that OU process converges to a Normal distribution.
 
