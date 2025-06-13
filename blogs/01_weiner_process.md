@@ -2,7 +2,7 @@
 # SDE, Weiner Process, ITO's Lemma and Reverse Time Equation
 
 ## Motivation
-I wrote this blog as I was trying to understand the math behind the diffusion model.Though one can understand the algorithm of differernt types of formulation under diffusion models such as herirachical VAE, Score based models, Rectiflow, flow models without knowing much about SDE, to understand in detail why they all fall under the same category I beleive a deeper understanding of weineer process, stochastic calculas which is the key to ITO's lemma, forward and backward equations etc are needed.     
+I wrote this blog as I was trying to understand the math behind the diffusion model.Though one can understand the algorithm of differernt types of formulation under diffusion models such as herirachical VAE, Score based models, Rectiflow, flow models without knowing much about SDE, to understand in detail why they all fall under the same category I beleive a deeper understanding of weineer process, stochastic calculas, ITO's lemma, forward and backward equations etc are needed.     
 I believe this post is self contained and is a good intro to Stochastic calculas needed for diffusion models as it covers a wide range of topics from basic probability measure to solving ITO's process with affine drift co-efficients(which is key for variance preserving, exploding cases) and reverse time equations and everything in between with proofs and intuitions. Lets get started.
 
 ## Introduction
