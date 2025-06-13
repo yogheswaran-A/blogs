@@ -1,5 +1,5 @@
 
-# Understanding Weiner Process
+# SDE, Weiner Process, ITO's Lemma and Reverse Time Equation
 
 ## Motivation
 I wrote this blog as I was trying to understand the math behind the diffusion model.Though one can understand the algorithm of differernt types of formulation under diffusion models such as herirachical VAE, Score based models, Rectiflow, flow models without knowing much about SDE, to understand in detail why they all fall under the same category I beleive a deeper understanding of weineer process, OU process is needed, especaily the stochastic calculas which is the key to ITO's lemma, forward and backward equations.     
@@ -628,6 +628,63 @@ $$
 
 Now lets look into OU process and ITO's lemma application.
 
+## ITO's Product Rule
+
+If we have two stochastic process $U(t)$ and $V(t)$, where 
+
+$$ dU(t) = \alpha(U,t)dt + \beta(U,t)dW_t $$
+
+and
+
+$$ dU(t) = \alpha(U,t)dt + \beta(U,t)dW_t $$
+
+then, 
+
+$$
+\boxed{
+d(U(t)V(t)) = U(t)\,dV(t) + V(t)\,dU(t) + dU(t)\,dV(t)
+}
+$$
+
+Proof: 
+This is a direct application of ITO's lemma, 
+
+We want to find $dY_t = d(U_t V_t)$. We can use Itô's Lemma for a function $f(U,V)=UV$.
+
+First, let's find the partial derivatives:
+
+$$
+\frac{\partial f}{\partial U} = V \\
+\frac{\partial f}{\partial V} = U \\
+\frac{\partial^2 f}{\partial U^2} = 0 \\
+\frac{\partial^2 f}{\partial V^2} = 0 \\
+\frac{\partial^2 f}{\partial U \partial V} = 1
+$$
+
+Itô's Lemma for a function of two Itô processes, $f(U_t,V_t)$, is given by:
+
+$$
+df(U_t,V_t) = \frac{\partial f}{\partial U}dU_t + \frac{\partial f}{\partial V}dV_t + \frac{1}{2}\frac{\partial^2 f}{\partial U^2}(dU_t)^2 + \frac{1}{2}\frac{\partial^2 f}{\partial V^2}(dV_t)^2 + \frac{\partial^2 f}{\partial U \partial V}dU_t dV_t
+$$
+
+The higher order terms become zero as $dW^n$ where $n > 2$ becomes zero, $dt^n$ where n >= 2 becomes zero, $dW^n * dt^k$ for any n,k becomes zero. (See the quadratic variation section).   
+
+This simplies to, 
+
+$$
+\boxed{
+d(U_t,V_t) = V_t dU_t + U_t dV_t + dU_t dV_t
+}
+$$
+
+When $U_t$ is a *determinitic funtion*, then the product  rule is ordinary chain rule, 
+
+$$
+\boxed{
+d(U_t,V_t) = V_t dU_t + U_t dV_t
+}
+$$
+
 ## Ornstein-Uhlenbeck Process
 
 The **Ornstein–Uhlenbeck (OU) process** is one of the most fundamental stochastic processes in continuous time. It models systems that evolve randomly, but with a natural tendency to drift back toward a long-term mean. Unlike standard Brownian motion, which wanders off indefinitely, the OU process is mean-reverting, it fluctuates around a central value, making it useful in modeling physical systems, finance, and in diffusion models.
@@ -708,7 +765,6 @@ X_t = e^{-\theta t} X_0 + \mu(1 - e^{-\theta t}) + \sigma e^{-\theta t} \int_0^t
 $$
 
 This is the classic Ornstein–Uhlenbeck process solution.
-
 
 $$
 \boxed{
@@ -846,9 +902,124 @@ plt.show()
 
 ![img](data/01-weiner-process/OU_simu.png)
 
+## Stochastic process With Affine Drift Co-efficients.
+
+In the last section we saw that OU process converges to a Normal distribution.
+
+This might make one ask a question, at any time $t$, can we have a $X_t$ follow a normal distribution $X_t \sim \mathcal{N}$ or $X_t/X_0 \sim \mathcal{N}$, as you might have expected the answer is YES, if the drift co-efficient is affine, i,e For a SDE
+
+$$ dX(t) = f(X,t)dt + \beta(X,t)dW_t $$ 
+
+$$X_t/X_0 \sim \mathcal{N}$$
+
+If 
+
+$$
+f(X,t)=a(t)X+b(t) \quad \text{(i.e, Affine Drift Co-efficients) and } \\
+\beta(X,t) = \beta(t) \quad \text{(i.e, diffusion coefficient is independent of X)}.
+$$ 
+
+Proof:
+
+Given a linear SDE of the form:
+
+$$
+dX(t) = a(t)X(t)\,dt + b(t)\,dt + \beta(t)\,dW_t
+$$
+
+This can be rewritten as:
+
+$$
+dX(t) = \left[a(t)X(t) + b(t)\right]dt + \beta(t)\,dW_t
+$$
+
+This is a linear SDE (i.e., linear in $X$), which can be solved using the method of integrating factors.
+Let us define an integrating factor:
+
+$$
+\mu(t) = \exp\left( -\int_0^t a(s) ds \right)
+$$
+
+Multiplying both sides of the SDE by $\mu(t)$:
+
+$$
+\mu(t)\,dX(t) = \mu(t)\left[a(t)X(t) + b(t)\right]dt + \mu(t)\beta(t)\,dW_t
+$$
+
+Using Ito's product rule (recall that since $\mu_t$ is determisnistic it is just chain rule):
+
+$$
+d[\mu(t)X(t)] = \mu(t)\,dX(t) + X(t)\,d\mu(t)
+$$
+
+But from the definition of $\mu(t)$:
+
+$$
+d\mu(t) = -a(t)\mu(t)\,dt \Rightarrow X(t)d\mu(t) = -a(t)\mu(t)X(t)\,dt
+$$
+
+So substituting $dX(t)$ and $X(t)d\mu(t)$ into the product rule:
+
+$$
+d[\mu(t)X(t)] = \mu(t)\left[a(t)X(t) + b(t)\right]dt + \mu(t)\beta(t)\,dW_t - a(t)\mu(t)X(t)\,dt
+$$
+
+The $a(t)X(t)$ terms cancel:
+
+$$
+d[\mu(t)X(t)] = \mu(t)b(t)\,dt + \mu(t)\beta(t)\,dW_t
+$$
+
+Integrating both sides from $0$ to $t$:
+
+$$
+\mu(t)X(t) = X_0 + \int_0^t \mu(s)b(s)\,ds + \int_0^t \mu(s)\beta(s)\,dW_s
+$$
+
+Multiplying both sides by $\mu(t)^{-1} = \exp\left(\int_0^t a(s)\,ds\right)$:
+
+$$
+X(t) = X_0 \exp\left( \int_0^t a(s)\,ds \right) + \exp\left( \int_0^t a(s)\,ds \right) \int_0^t \mu(s)b(s)\,ds + \exp\left( \int_0^t a(s)\,ds \right) \int_0^t \mu(s)\beta(s)\,dW_s
+$$
+
+Each term is now a linear combination of deterministic functions and a stochastic integral with deterministic integrand.
+
+From the solution, $X(t)$ can be written as:
+
+$$
+X(t) = \text{Deterministic part} + \exp\left( \int_0^t a(s)ds \right)\int_0^t \mu(s)\beta(s)dW_s
+$$
+
+The stochastic part is:
+
+$$
+\exp\left( \int_0^t a(s)ds \right)\int_0^t \mu(s)\beta(s)dW_s
+$$
+
+This is a stochastic integral of a deterministic function, hence:
+* It is a Gaussian random variable.
+* It has mean zero.
+* Its variance is given:
+
+$$
+\operatorname{Var}\left( \exp\left( \int_0^t a(s)ds \right)\int_0^t \mu(s)\beta(s)dW_s \right) = \exp\left( 2\int_0^t a(s)ds \right) \int_0^t \left[\exp\left( -\int_0^t a(s) ds \right)\beta(s)\right]^2\,ds
+$$
+
+Hence $X(t)$ is a linear transformation of a Gaussian random variable, plus deterministic terms. Therefore:
+
+$X(t) \mid X_0$ is normally distributed for all $t$, i.e., Gaussian.
+
+So , If $f(x,t) = a(t)x + b(t)$ and $\beta(x,t) = \beta(t)$ (i.e., independent of $x$), then the SDE:
+
+$$
+dX(t) = f(X,t)dt + \beta(t)dW_t = [a(t)X(t) + b(t)]dt + \beta(t)dW_t
+$$
+
+has solution $X(t) \mid X_0$ that is Gaussian-distributed for all $t$, since the solution is a linear function of a Gaussian process.
+
 ## Reverse Time Equation
 
-In the above OU process graph, we can see that after some time $T$ the final state is a sample from a normal distribution. Now we can ask an interesting question here, given that we have the final state(a sample from normal distribution), can we trace back and reach the initial state? That is can we traverse back in time to reach a state from the initial distribution?
+We saw OU process graph, we can see that after some time $T$ the final state is a sample from a normal distribution. Now we can ask an interesting question here, given that we have the final state(a sample from normal distribution), can we trace back and reach the initial state? That is can we traverse back in time to reach a state from the initial distribution?
 Or more broadly for a stochastic process we have the forward equation given by :   
 
 $$ 
@@ -863,3 +1034,4 @@ $$
 dX(t) = \left(\mu(t) - \sigma^2(t)\nabla_X \log p(X(t),t)\right)dt + \sigma(t)d\hat{W}_t
 $$
 
+So by following this reverse SDE one can go back to a state from the initial  distribution.

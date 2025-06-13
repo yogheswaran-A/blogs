@@ -62,7 +62,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = '02_Diffusion_models_Score_Models_ETC';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Understanding Weiner Process" href="01_weiner_process.html" />
+    <link rel="prev" title="SDE, Weiner Process, ITO’s Lemma and Reverse Time Equation" href="01_weiner_process.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -175,7 +175,7 @@
             </li>
         </ul>
         <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="01_weiner_process.html">Understanding Weiner Process</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01_weiner_process.html">SDE, Weiner Process, ITO’s Lemma and Reverse Time Equation</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Viewing Diffusion, Score, Rectified flow, Heirrachical VAEs From The Same Lens</a></li>
 </ul>
 
@@ -388,7 +388,7 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="viewing-diffusion-score-rectified-flow-heirrachical-vaes-from-the-same-lens">
 <h1>Viewing Diffusion, Score, Rectified flow, Heirrachical VAEs From The Same Lens<a class="headerlink" href="#viewing-diffusion-score-rectified-flow-heirrachical-vaes-from-the-same-lens" title="Link to this heading">#</a></h1>
-<p>This blog contains the basics, derivations, intuition and idea behind diffusion models, score based models, Heirrachical VAEs and rectified flow. I have also explained how these formulations relate to one another and comes under the same umberala. I will start with each formulation independently and at the end we will see how all of these fall under the same umberela.</p>
+<p>This blog contains the basics, derivations, intuition and idea behind diffusion models, score based models, Heirrachical VAEs and rectified flow. I have also explained how these formulations relate to one another and comes under the same umberala. I will start with each formulation and as we progress we will see how all of these fall under the same umberela.</p>
 <section id="contents">
 <h2>Contents<a class="headerlink" href="#contents" title="Link to this heading">#</a></h2>
 <ul class="simple">
@@ -397,12 +397,10 @@ document.write(`
 </section>
 <section id="pre-requistes">
 <h2>Pre requistes<a class="headerlink" href="#pre-requistes" title="Link to this heading">#</a></h2>
-<p>For understanding diffusion: Stochastic differential equations, mainly <a class="reference external" href="https://ludwigwinkler.github.io/blog/SDE/">SDE</a>, <a class="reference external" href="https://ludwigwinkler.github.io/blog/ItosLemma/">Ito’s lemma</a>, <a class="reference external" href="https://ludwigwinkler.github.io/blog/SolvingSDEs/">OU process</a>, <a class="reference external" href="https://ludwigwinkler.github.io/blog/Kramers/">Forward And Backward</a>.<br />
-Basic Mathematics like differention, integration.</p>
+<p>For understanding diffusion: SDEs, Ito’s lemma, OU process, Forward And Backward. One can read more about this in my previous <a class="reference external" href="https://yogheswaran-a.github.io/blogs/01_weiner_process.html">blog post</a>.</p>
 </section>
 <section id="diffusion-models">
 <h2>Diffusion Models<a class="headerlink" href="#diffusion-models" title="Link to this heading">#</a></h2>
-<p>To understand this section, knowldge of Stochastic differential equation is required. I have provided only a brief intro and some famous results of SDE which we will use. You can read more about SDE in these blog posts: <a class="reference external" href="https://ludwigwinkler.github.io/blog/SDE/">SDE</a>, <a class="reference external" href="https://ludwigwinkler.github.io/blog/ItosLemma/">Ito’s lemma</a>, <a class="reference external" href="https://ludwigwinkler.github.io/blog/SolvingSDEs/">OU process</a>, <a class="reference external" href="https://ludwigwinkler.github.io/blog/Kramers/">Forward And Backward</a>. The author also has other related SDE posts if you want to know more.</p>
 <p>Here is the problem statement:<br />
 Given a collection of images, we want to generate a new image that looks similar to those in the dataset. How might we solve this problem using our knowledge of <strong>Stochastic Differential Equations (SDEs)</strong>? Some thoughts:</p>
 <ol class="arabic simple">
@@ -412,9 +410,26 @@ Given a collection of images, we want to generate a new image that looks similar
 </ol>
 <p>Now, we want this Gaussian noise to eventually produce samples from <span class="math notranslate nohighlight">\(P_I\)</span>. Wait…isn’t this the reverse of the Ornstein–Uhlenbeck (OU) process? Yes it is. We start from a stationary distribution <span class="math notranslate nohighlight">\(P_I\)</span> and should end in a stationary distribution <span class="math notranslate nohighlight">\(\mathcal{N}(0, I)\)</span>.
 So what we need is to construct a stochastic process such that, as time progresses, <span class="math notranslate nohighlight">\(P_I\)</span> evolves into <span class="math notranslate nohighlight">\(\mathcal{N}(0, I)\)</span>, that is, a <strong>forward diffusion</strong>. Then, by learning its <strong>reverse process</strong>, we can go from Gaussian noise back to realistic images.</p>
-<p>Okay, now how do I construct the forward process? OU process generally have the following SDE:<br />
-<span class="math notranslate nohighlight">\(dX_t = \theta (\mu - X_t)\,dt + \sigma\,dW_t\)</span><br />
-where <span class="math notranslate nohighlight">\(\theta\)</span> is the momentum parameter that makes the OU process undulate around the mean. The mean parameter <span class="math notranslate nohighlight">\(\sigma\)</span> sets the value around which the OU process moves in somewhat smooth arcs.</p>
+<p>Okay, now how do I construct the forward process? Mathematically, the OU process is defined by the stochastic differential equation (SDE):</p>
+<div class="math notranslate nohighlight">
+\[
+dX_t = \theta(\mu - X_t)\,dt + \sigma\,dW_t
+\]</div>
+<p>Here:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\mu\)</span> is the long-term mean toward which the process is pulled,</p></li>
+<li><p><span class="math notranslate nohighlight">\(\theta &gt; 0\)</span> is the rate of mean reversion,</p></li>
+<li><p><span class="math notranslate nohighlight">\(\sigma\)</span> controls the intensity of the randomness, and</p></li>
+<li><p><span class="math notranslate nohighlight">\(W_t\)</span> is standard Brownian motion (Wiener process).</p></li>
+</ul>
+<p>The term <span class="math notranslate nohighlight">\(\theta(\mu - X_t) \, dt\)</span> causes the process to drift back toward <span class="math notranslate nohighlight">\(\mu\)</span> whenever it deviates, while <span class="math notranslate nohighlight">\(\sigma\,dW_t\)</span> injects randomness into the motion. This balance between deterministic pull and random noise gives the OU process its characteristic wiggly but stable behavior.
+The classic Ornstein–Uhlenbeck process solution.</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{
+X_t = e^{-\theta t} X_0 + \mu(1 - e^{-\theta t}) + \sigma e^{-\theta t} \int_0^t e^{\theta s}\,dW_s
+}
+\]</div>
 </section>
 </section>
 
@@ -454,7 +469,7 @@ where <span class="math notranslate nohighlight">\(\theta\)</span> is the moment
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Understanding Weiner Process</p>
+        <p class="prev-next-title">SDE, Weiner Process, ITO’s Lemma and Reverse Time Equation</p>
       </div>
     </a>
 </div>
