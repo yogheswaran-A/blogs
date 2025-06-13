@@ -1,17 +1,14 @@
 # Viewing Diffusion, Score, Rectified flow, Heirrachical VAEs From The Same Lens
 
-This blog contains the basics, derivations, intuition and idea behind diffusion models, score based models, Heirrachical VAEs and rectified flow. I have also explained how these formulations relate to one another and comes under the same umberala. I will start with each formulation independently and at the end we will see how all of these fall under the same umberela. 
+This blog contains the basics, derivations, intuition and idea behind diffusion models, score based models, Heirrachical VAEs and rectified flow. I have also explained how these formulations relate to one another and comes under the same umberala. I will start with each formulation and as we progress we will see how all of these fall under the same umberela. 
 
 ## Contents
 - Diffuions Models
 
 ## Pre requistes   
-For understanding diffusion: Stochastic differential equations, mainly [SDE](https://ludwigwinkler.github.io/blog/SDE/), [Ito's lemma](https://ludwigwinkler.github.io/blog/ItosLemma/), [OU process](https://ludwigwinkler.github.io/blog/SolvingSDEs/), [Forward And Backward](https://ludwigwinkler.github.io/blog/Kramers/).    
-Basic Mathematics like differention, integration.   
+For understanding diffusion: SDEs, Ito's lemma, OU process, Forward And Backward. One can read more about this in my previous [blog post](https://yogheswaran-a.github.io/blogs/01_weiner_process.html).       
 
 ## Diffusion Models
-
-To understand this section, knowldge of Stochastic differential equation is required. I have provided only a brief intro and some famous results of SDE which we will use. You can read more about SDE in these blog posts: [SDE](https://ludwigwinkler.github.io/blog/SDE/), [Ito's lemma](https://ludwigwinkler.github.io/blog/ItosLemma/), [OU process](https://ludwigwinkler.github.io/blog/SolvingSDEs/), [Forward And Backward](https://ludwigwinkler.github.io/blog/Kramers/). The author also has other related SDE posts if you want to know more.
 
 Here is the problem statement:  
 Given a collection of images, we want to generate a new image that looks similar to those in the dataset. How might we solve this problem using our knowledge of **Stochastic Differential Equations (SDEs)**? Some thoughts:
@@ -25,6 +22,24 @@ Given a collection of images, we want to generate a new image that looks similar
 Now, we want this Gaussian noise to eventually produce samples from $P_I$. Wait...isn’t this the reverse of the Ornstein–Uhlenbeck (OU) process? Yes it is. We start from a stationary distribution $P_I$ and should end in a stationary distribution $\mathcal{N}(0, I)$.
 So what we need is to construct a stochastic process such that, as time progresses, $P_I$ evolves into $\mathcal{N}(0, I)$, that is, a **forward diffusion**. Then, by learning its **reverse process**, we can go from Gaussian noise back to realistic images.
 
-Okay, now how do I construct the forward process? OU process generally have the following SDE:   
-$dX_t = \theta (\mu - X_t)\,dt + \sigma\,dW_t$   
-where $\theta$ is the momentum parameter that makes the OU process undulate around the mean. The mean parameter $\sigma$ sets the value around which the OU process moves in somewhat smooth arcs.
+Okay, now how do I construct the forward process? Mathematically, the OU process is defined by the stochastic differential equation (SDE):
+
+$$
+dX_t = \theta(\mu - X_t)\,dt + \sigma\,dW_t
+$$
+
+Here:
+
+* $\mu$ is the long-term mean toward which the process is pulled,
+* $\theta > 0$ is the rate of mean reversion,
+* $\sigma$ controls the intensity of the randomness, and
+* $W_t$ is standard Brownian motion (Wiener process).
+
+The term $\theta(\mu - X_t) \, dt$ causes the process to drift back toward $\mu$ whenever it deviates, while $\sigma\,dW_t$ injects randomness into the motion. This balance between deterministic pull and random noise gives the OU process its characteristic wiggly but stable behavior.
+The classic Ornstein–Uhlenbeck process solution.
+
+$$
+\boxed{
+X_t = e^{-\theta t} X_0 + \mu(1 - e^{-\theta t}) + \sigma e^{-\theta t} \int_0^t e^{\theta s}\,dW_s
+}
+$$

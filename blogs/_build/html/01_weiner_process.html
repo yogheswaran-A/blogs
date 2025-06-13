@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Understanding Weiner Process &#8212; Blogs</title>
+    <title>SDE, Weiner Process, ITO’s Lemma and Reverse Time Equation &#8212; Blogs</title>
   
   
   
@@ -176,7 +176,7 @@
             </li>
         </ul>
         <ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Understanding Weiner Process</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">SDE, Weiner Process, ITO’s Lemma and Reverse Time Equation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="02_Diffusion_models_Score_Models_ETC.html">Viewing Diffusion, Score, Rectified flow, Heirrachical VAEs From The Same Lens</a></li>
 </ul>
 
@@ -363,7 +363,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Understanding Weiner Process</h1>
+    <h1>SDE, Weiner Process, ITO’s Lemma and Reverse Time Equation</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -391,12 +391,14 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ito-s-lemma">ITO’s Lemma</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ito-s-product-rule">ITO’s Product Rule</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ornstein-uhlenbeck-process">Ornstein-Uhlenbeck Process</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ornsteinuhlenbeck-ou-process-solution">Ornstein–Uhlenbeck (OU) Process Solution</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mean-of-x-t">Mean of <span class="math notranslate nohighlight">\(X_t\)</span></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#variance-of-x-t">Variance of <span class="math notranslate nohighlight">\(X_t\)</span></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stochastic-process-with-affine-drift-co-efficients">Stochastic process With Affine Drift Co-efficients.</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reverse-time-equation">Reverse Time Equation</a></li>
 </ul>
             </nav>
@@ -409,8 +411,8 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="understanding-weiner-process">
-<h1>Understanding Weiner Process<a class="headerlink" href="#understanding-weiner-process" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="sde-weiner-process-ito-s-lemma-and-reverse-time-equation">
+<h1>SDE, Weiner Process, ITO’s Lemma and Reverse Time Equation<a class="headerlink" href="#sde-weiner-process-ito-s-lemma-and-reverse-time-equation" title="Link to this heading">#</a></h1>
 <section id="motivation">
 <h2>Motivation<a class="headerlink" href="#motivation" title="Link to this heading">#</a></h2>
 <p>I wrote this blog as I was trying to understand the math behind the diffusion model.Though one can understand the algorithm of differernt types of formulation under diffusion models such as herirachical VAE, Score based models, Rectiflow, flow models without knowing much about SDE, to understand in detail why they all fall under the same category I beleive a deeper understanding of weineer process, OU process is needed, especaily the stochastic calculas which is the key to ITO’s lemma, forward and backward equations.<br />
@@ -952,6 +954,54 @@ df(t,X(t)) = \left(\frac{\partial f}{\partial t} + \mu(t)\frac{\partial f}{\part
 \]</div>
 <p>Now lets look into OU process and ITO’s lemma application.</p>
 </section>
+<section id="ito-s-product-rule">
+<h2>ITO’s Product Rule<a class="headerlink" href="#ito-s-product-rule" title="Link to this heading">#</a></h2>
+<p>If we have two stochastic process <span class="math notranslate nohighlight">\(U(t)\)</span> and <span class="math notranslate nohighlight">\(V(t)\)</span>, where</p>
+<div class="math notranslate nohighlight">
+\[ dU(t) = \alpha(U,t)dt + \beta(U,t)dW_t \]</div>
+<p>and</p>
+<div class="math notranslate nohighlight">
+\[ dU(t) = \alpha(U,t)dt + \beta(U,t)dW_t \]</div>
+<p>then,</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{
+d(U(t)V(t)) = U(t)\,dV(t) + V(t)\,dU(t) + dU(t)\,dV(t)
+}
+\]</div>
+<p>Proof:
+This is a direct application of ITO’s lemma,</p>
+<p>We want to find <span class="math notranslate nohighlight">\(dY_t = d(U_t V_t)\)</span>. We can use Itô’s Lemma for a function <span class="math notranslate nohighlight">\(f(U,V)=UV\)</span>.</p>
+<p>First, let’s find the partial derivatives:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\frac{\partial f}{\partial U} = V \\
+\frac{\partial f}{\partial V} = U \\
+\frac{\partial^2 f}{\partial U^2} = 0 \\
+\frac{\partial^2 f}{\partial V^2} = 0 \\
+\frac{\partial^2 f}{\partial U \partial V} = 1
+\end{split}\]</div>
+<p>Itô’s Lemma for a function of two Itô processes, <span class="math notranslate nohighlight">\(f(U_t,V_t)\)</span>, is given by:</p>
+<div class="math notranslate nohighlight">
+\[
+df(U_t,V_t) = \frac{\partial f}{\partial U}dU_t + \frac{\partial f}{\partial V}dV_t + \frac{1}{2}\frac{\partial^2 f}{\partial U^2}(dU_t)^2 + \frac{1}{2}\frac{\partial^2 f}{\partial V^2}(dV_t)^2 + \frac{\partial^2 f}{\partial U \partial V}dU_t dV_t
+\]</div>
+<p>The higher order terms become zero as <span class="math notranslate nohighlight">\(dW^n\)</span> where <span class="math notranslate nohighlight">\(n &gt; 2\)</span> becomes zero, <span class="math notranslate nohighlight">\(dt^n\)</span> where n &gt;= 2 becomes zero, <span class="math notranslate nohighlight">\(dW^n * dt^k\)</span> for any n,k becomes zero. (See the quadratic variation section).</p>
+<p>This simplies to,</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{
+d(U_t,V_t) = V_t dU_t + U_t dV_t + dU_t dV_t
+}
+\]</div>
+<p>When <span class="math notranslate nohighlight">\(U_t\)</span> is a <em>determinitic funtion</em>, then the product  rule is ordinary chain rule,</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{
+d(U_t,V_t) = V_t dU_t + U_t dV_t
+}
+\]</div>
+</section>
 <section id="ornstein-uhlenbeck-process">
 <h2>Ornstein-Uhlenbeck Process<a class="headerlink" href="#ornstein-uhlenbeck-process" title="Link to this heading">#</a></h2>
 <p>The <strong>Ornstein–Uhlenbeck (OU) process</strong> is one of the most fundamental stochastic processes in continuous time. It models systems that evolve randomly, but with a natural tendency to drift back toward a long-term mean. Unlike standard Brownian motion, which wanders off indefinitely, the OU process is mean-reverting, it fluctuates around a central value, making it useful in modeling physical systems, finance, and in diffusion models.</p>
@@ -1146,9 +1196,105 @@ X_t \overset{d}{\to} \mathcal{N}\left(\mu, \frac{\sigma^2}{2\theta}\right)
 <p><img alt="img" src="_images/OU_simu.png" /></p>
 </section>
 </section>
+<section id="stochastic-process-with-affine-drift-co-efficients">
+<h2>Stochastic process With Affine Drift Co-efficients.<a class="headerlink" href="#stochastic-process-with-affine-drift-co-efficients" title="Link to this heading">#</a></h2>
+<p>In the last section we saw that OU process converges to a Normal distribution.</p>
+<p>This might make one ask a question, at any time <span class="math notranslate nohighlight">\(t\)</span>, can we have a <span class="math notranslate nohighlight">\(X_t\)</span> follow a normal distribution <span class="math notranslate nohighlight">\(X_t \sim \mathcal{N}\)</span> or <span class="math notranslate nohighlight">\(X_t/X_0 \sim \mathcal{N}\)</span>, as you might have expected the answer is YES, if the drift co-efficient is affine, i,e For a SDE</p>
+<div class="math notranslate nohighlight">
+\[ dX(t) = f(X,t)dt + \beta(X,t)dW_t \]</div>
+<div class="math notranslate nohighlight">
+\[X_t/X_0 \sim \mathcal{N}\]</div>
+<p>If</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+f(X,t)=a(t)X+b(t) \quad \text{(i.e, Affine Drift Co-efficients) and } \\
+\beta(X,t) = \beta(t) \quad \text{(i.e, diffusion coefficient is independent of X)}.
+\end{split}\]</div>
+<p>Proof:</p>
+<p>Given a linear SDE of the form:</p>
+<div class="math notranslate nohighlight">
+\[
+dX(t) = a(t)X(t)\,dt + b(t)\,dt + \beta(t)\,dW_t
+\]</div>
+<p>This can be rewritten as:</p>
+<div class="math notranslate nohighlight">
+\[
+dX(t) = \left[a(t)X(t) + b(t)\right]dt + \beta(t)\,dW_t
+\]</div>
+<p>This is a linear SDE (i.e., linear in <span class="math notranslate nohighlight">\(X\)</span>), which can be solved using the method of integrating factors.
+Let us define an integrating factor:</p>
+<div class="math notranslate nohighlight">
+\[
+\mu(t) = \exp\left( -\int_0^t a(s) ds \right)
+\]</div>
+<p>Multiplying both sides of the SDE by <span class="math notranslate nohighlight">\(\mu(t)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[
+\mu(t)\,dX(t) = \mu(t)\left[a(t)X(t) + b(t)\right]dt + \mu(t)\beta(t)\,dW_t
+\]</div>
+<p>Using Ito’s product rule (recall that since <span class="math notranslate nohighlight">\(\mu_t\)</span> is determisnistic it is just chain rule):</p>
+<div class="math notranslate nohighlight">
+\[
+d[\mu(t)X(t)] = \mu(t)\,dX(t) + X(t)\,d\mu(t)
+\]</div>
+<p>But from the definition of <span class="math notranslate nohighlight">\(\mu(t)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[
+d\mu(t) = -a(t)\mu(t)\,dt \Rightarrow X(t)d\mu(t) = -a(t)\mu(t)X(t)\,dt
+\]</div>
+<p>So substituting <span class="math notranslate nohighlight">\(dX(t)\)</span> and <span class="math notranslate nohighlight">\(X(t)d\mu(t)\)</span> into the product rule:</p>
+<div class="math notranslate nohighlight">
+\[
+d[\mu(t)X(t)] = \mu(t)\left[a(t)X(t) + b(t)\right]dt + \mu(t)\beta(t)\,dW_t - a(t)\mu(t)X(t)\,dt
+\]</div>
+<p>The <span class="math notranslate nohighlight">\(a(t)X(t)\)</span> terms cancel:</p>
+<div class="math notranslate nohighlight">
+\[
+d[\mu(t)X(t)] = \mu(t)b(t)\,dt + \mu(t)\beta(t)\,dW_t
+\]</div>
+<p>Integrating both sides from <span class="math notranslate nohighlight">\(0\)</span> to <span class="math notranslate nohighlight">\(t\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[
+\mu(t)X(t) = X_0 + \int_0^t \mu(s)b(s)\,ds + \int_0^t \mu(s)\beta(s)\,dW_s
+\]</div>
+<p>Multiplying both sides by <span class="math notranslate nohighlight">\(\mu(t)^{-1} = \exp\left(\int_0^t a(s)\,ds\right)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[
+X(t) = X_0 \exp\left( \int_0^t a(s)\,ds \right) + \exp\left( \int_0^t a(s)\,ds \right) \int_0^t \mu(s)b(s)\,ds + \exp\left( \int_0^t a(s)\,ds \right) \int_0^t \mu(s)\beta(s)\,dW_s
+\]</div>
+<p>Each term is now a linear combination of deterministic functions and a stochastic integral with deterministic integrand.</p>
+<p>From the solution, <span class="math notranslate nohighlight">\(X(t)\)</span> can be written as:</p>
+<div class="math notranslate nohighlight">
+\[
+X(t) = \text{Deterministic part} + \exp\left( \int_0^t a(s)ds \right)\int_0^t \mu(s)\beta(s)dW_s
+\]</div>
+<p>The stochastic part is:</p>
+<div class="math notranslate nohighlight">
+\[
+\exp\left( \int_0^t a(s)ds \right)\int_0^t \mu(s)\beta(s)dW_s
+\]</div>
+<p>This is a stochastic integral of a deterministic function, hence:</p>
+<ul class="simple">
+<li><p>It is a Gaussian random variable.</p></li>
+<li><p>It has mean zero.</p></li>
+<li><p>Its variance is given:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[
+\operatorname{Var}\left( \exp\left( \int_0^t a(s)ds \right)\int_0^t \mu(s)\beta(s)dW_s \right) = \exp\left( 2\int_0^t a(s)ds \right) \int_0^t \left[\exp\left( -\int_0^t a(s) ds \right)\beta(s)\right]^2\,ds
+\]</div>
+<p>Hence <span class="math notranslate nohighlight">\(X(t)\)</span> is a linear transformation of a Gaussian random variable, plus deterministic terms. Therefore:</p>
+<p><span class="math notranslate nohighlight">\(X(t) \mid X_0\)</span> is normally distributed for all <span class="math notranslate nohighlight">\(t\)</span>, i.e., Gaussian.</p>
+<p>So , If <span class="math notranslate nohighlight">\(f(x,t) = a(t)x + b(t)\)</span> and <span class="math notranslate nohighlight">\(\beta(x,t) = \beta(t)\)</span> (i.e., independent of <span class="math notranslate nohighlight">\(x\)</span>), then the SDE:</p>
+<div class="math notranslate nohighlight">
+\[
+dX(t) = f(X,t)dt + \beta(t)dW_t = [a(t)X(t) + b(t)]dt + \beta(t)dW_t
+\]</div>
+<p>has solution <span class="math notranslate nohighlight">\(X(t) \mid X_0\)</span> that is Gaussian-distributed for all <span class="math notranslate nohighlight">\(t\)</span>, since the solution is a linear function of a Gaussian process.</p>
+</section>
 <section id="reverse-time-equation">
 <h2>Reverse Time Equation<a class="headerlink" href="#reverse-time-equation" title="Link to this heading">#</a></h2>
-<p>In the above OU process graph, we can see that after some time <span class="math notranslate nohighlight">\(T\)</span> the final state is a sample from a normal distribution. Now we can ask an interesting question here, given that we have the final state(a sample from normal distribution), can we trace back and reach the initial state? That is can we traverse back in time to reach a state from the initial distribution?
+<p>We saw OU process graph, we can see that after some time <span class="math notranslate nohighlight">\(T\)</span> the final state is a sample from a normal distribution. Now we can ask an interesting question here, given that we have the final state(a sample from normal distribution), can we trace back and reach the initial state? That is can we traverse back in time to reach a state from the initial distribution?
 Or more broadly for a stochastic process we have the forward equation given by :</p>
 <div class="math notranslate nohighlight">
 \[ 
@@ -1160,6 +1306,7 @@ dX(t) = \mu(t)dt + \sigma(t)dW_t
 \[
 dX(t) = \left(\mu(t) - \sigma^2(t)\nabla_X \log p(X(t),t)\right)dt + \sigma(t)d\hat{W}_t
 \]</div>
+<p>So by following this reverse SDE one can go back to a state from the initial  distribution.</p>
 </section>
 </section>
 
@@ -1245,12 +1392,14 @@ dX(t) = \left(\mu(t) - \sigma^2(t)\nabla_X \log p(X(t),t)\right)dt + \sigma(t)d\
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ito-s-lemma">ITO’s Lemma</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ito-s-product-rule">ITO’s Product Rule</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ornstein-uhlenbeck-process">Ornstein-Uhlenbeck Process</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ornsteinuhlenbeck-ou-process-solution">Ornstein–Uhlenbeck (OU) Process Solution</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mean-of-x-t">Mean of <span class="math notranslate nohighlight">\(X_t\)</span></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#variance-of-x-t">Variance of <span class="math notranslate nohighlight">\(X_t\)</span></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stochastic-process-with-affine-drift-co-efficients">Stochastic process With Affine Drift Co-efficients.</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reverse-time-equation">Reverse Time Equation</a></li>
 </ul>
   </nav></div>
