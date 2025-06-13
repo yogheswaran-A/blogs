@@ -846,3 +846,20 @@ plt.show()
 
 ![img](data/01-weiner-process/OU_simu.png)
 
+## Reverse Time Equation
+
+In the above OU process graph, we can see that after some time $T$ the final state is a sample from a normal distribution. Now we can ask an interesting question here, given that we have the final state(a sample from normal distribution), can we trace back and reach the initial state? That is can we traverse back in time to reach a state from the initial distribution?
+Or more broadly for a stochastic process we have the forward equation given by :   
+
+$$ 
+dX(t) = \mu(t)dt + \sigma(t)dW_t 
+$$
+
+for some initial state $X_0$. If we let this proces continue for some time $T$ and let the state be now $X_T$. Can go back in reverse direction? Can we start from $X_T$ a state from the final distribution and go back to a state from the intial distribution? The answer to that is YES!!.
+
+The reverse time equation allows us to do this, which is given by:
+
+$$
+dX(t) = \left(\mu(t) - \sigma^2(t)\nabla_X \log p(X(t),t)\right)dt + \sigma(t)d\hat{W}_t
+$$
+

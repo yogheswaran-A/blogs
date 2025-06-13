@@ -62,6 +62,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = '01_weiner_process';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Viewing Diffusion, Score, Rectified flow, Heirrachical VAEs From The Same Lens" href="02_Diffusion_models_Score_Models_ETC.html" />
     <link rel="prev" title="Blogs Landing Page" href="00_landing_page.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -176,6 +177,7 @@
         </ul>
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Understanding Weiner Process</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_Diffusion_models_Score_Models_ETC.html">Viewing Diffusion, Score, Rectified flow, Heirrachical VAEs From The Same Lens</a></li>
 </ul>
 
     </div>
@@ -395,6 +397,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#variance-of-x-t">Variance of <span class="math notranslate nohighlight">\(X_t\)</span></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reverse-time-equation">Reverse Time Equation</a></li>
 </ul>
             </nav>
         </div>
@@ -1143,6 +1146,21 @@ X_t \overset{d}{\to} \mathcal{N}\left(\mu, \frac{\sigma^2}{2\theta}\right)
 <p><img alt="img" src="_images/OU_simu.png" /></p>
 </section>
 </section>
+<section id="reverse-time-equation">
+<h2>Reverse Time Equation<a class="headerlink" href="#reverse-time-equation" title="Link to this heading">#</a></h2>
+<p>In the above OU process graph, we can see that after some time <span class="math notranslate nohighlight">\(T\)</span> the final state is a sample from a normal distribution. Now we can ask an interesting question here, given that we have the final state(a sample from normal distribution), can we trace back and reach the initial state? That is can we traverse back in time to reach a state from the initial distribution?
+Or more broadly for a stochastic process we have the forward equation given by :</p>
+<div class="math notranslate nohighlight">
+\[ 
+dX(t) = \mu(t)dt + \sigma(t)dW_t 
+\]</div>
+<p>for some initial state <span class="math notranslate nohighlight">\(X_0\)</span>. If we let this proces continue for some time <span class="math notranslate nohighlight">\(T\)</span> and let the state be now <span class="math notranslate nohighlight">\(X_T\)</span>. Can go back in reverse direction? Can we start from <span class="math notranslate nohighlight">\(X_T\)</span> a state from the final distribution and go back to a state from the intial distribution? The answer to that is YES!!.</p>
+<p>The reverse time equation allows us to do this, which is given by:</p>
+<div class="math notranslate nohighlight">
+\[
+dX(t) = \left(\mu(t) - \sigma^2(t)\nabla_X \log p(X(t),t)\right)dt + \sigma(t)d\hat{W}_t
+\]</div>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -1184,6 +1202,15 @@ X_t \overset{d}{\to} \mathcal{N}\left(\mu, \frac{\sigma^2}{2\theta}\right)
         <p class="prev-next-title">Blogs Landing Page</p>
       </div>
     </a>
+    <a class="right-next"
+       href="02_Diffusion_models_Score_Models_ETC.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Viewing Diffusion, Score, Rectified flow, Heirrachical VAEs From The Same Lens</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
@@ -1224,6 +1251,7 @@ X_t \overset{d}{\to} \mathcal{N}\left(\mu, \frac{\sigma^2}{2\theta}\right)
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#variance-of-x-t">Variance of <span class="math notranslate nohighlight">\(X_t\)</span></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reverse-time-equation">Reverse Time Equation</a></li>
 </ul>
   </nav></div>
 
