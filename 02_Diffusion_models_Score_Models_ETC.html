@@ -405,10 +405,10 @@ document.write(`
 Given a collection of images, we want to generate a new image that looks similar to those in the dataset. How might we solve this problem using our knowledge of <strong>Stochastic Differential Equations (SDEs)</strong>? Some thoughts:</p>
 <ol class="arabic simple">
 <li><p>The collection of images represents a distribution of images, denoted by <span class="math notranslate nohighlight">\(P_I\)</span>. Our goal is to generate a sample from this same distribution.</p></li>
-<li><p>Since neural networks NNs are good at function approximation, we can train a NN to generate an image from the distribution <span class="math notranslate nohighlight">\(P_I\)</span>.</p></li>
+<li><p>Since neural networks NNs are good at function approximation, we can maybe train a NN to generate an image from the distribution <span class="math notranslate nohighlight">\(P_I\)</span>?</p></li>
 <li><p>What should the input to the network be? Ideally, it should be something simple and low-dimensional to make inference efficient. A common approach is to sample a vector <span class="math notranslate nohighlight">\(x\)</span> from a standard Gaussian distribution <span class="math notranslate nohighlight">\(\mathcal{N}(0, I)\)</span>, so we’ll use this as our input.</p></li>
 </ol>
-<p>Now, we want this Gaussian noise to eventually produce samples from <span class="math notranslate nohighlight">\(P_I\)</span>. Wait…isn’t this the reverse of the Ornstein–Uhlenbeck (OU) process? Yes it is. We start from a stationary distribution <span class="math notranslate nohighlight">\(P_I\)</span> and should end in a stationary distribution <span class="math notranslate nohighlight">\(\mathcal{N}(0, I)\)</span>.
+<p>Now, we want this Gaussian noise to eventually produce samples from <span class="math notranslate nohighlight">\(P_I\)</span>. Wait…isn’t this the reverse of the <a class="reference external" href="https://yogheswaran-a.github.io/blogs/01_weiner_process.html#ornstein-uhlenbeck-process">Ornstein–Uhlenbeck (OU) process </a>? Yes it is. We start from a stationary distribution <span class="math notranslate nohighlight">\(P_I\)</span> and should end in a stationary distribution <span class="math notranslate nohighlight">\(\mathcal{N}(0, I)\)</span>.
 So what we need is to construct a stochastic process such that, as time progresses, <span class="math notranslate nohighlight">\(P_I\)</span> evolves into <span class="math notranslate nohighlight">\(\mathcal{N}(0, I)\)</span>, that is, a <strong>forward diffusion</strong>. Then, by learning its <strong>reverse process</strong>, we can go from Gaussian noise back to realistic images.</p>
 <p>Okay, now how do I construct the forward process? Mathematically, the OU process is defined by the stochastic differential equation (SDE):</p>
 <div class="math notranslate nohighlight">
@@ -422,12 +422,28 @@ dX_t = \theta(\mu - X_t)\,dt + \sigma\,dW_t
 <li><p><span class="math notranslate nohighlight">\(\sigma\)</span> controls the intensity of the randomness, and</p></li>
 <li><p><span class="math notranslate nohighlight">\(W_t\)</span> is standard Brownian motion (Wiener process).</p></li>
 </ul>
-<p>The term <span class="math notranslate nohighlight">\(\theta(\mu - X_t) \, dt\)</span> causes the process to drift back toward <span class="math notranslate nohighlight">\(\mu\)</span> whenever it deviates, while <span class="math notranslate nohighlight">\(\sigma\,dW_t\)</span> injects randomness into the motion. This balance between deterministic pull and random noise gives the OU process its characteristic wiggly but stable behavior.
-The classic Ornstein–Uhlenbeck process solution.</p>
+<p>The Ornstein–Uhlenbeck process solution is <a class="reference external" href="https://yogheswaran-a.github.io/blogs/01_weiner_process.html#ornstein-uhlenbeck-process">given by</a>:</p>
 <div class="math notranslate nohighlight">
 \[
 \boxed{
 X_t = e^{-\theta t} X_0 + \mu(1 - e^{-\theta t}) + \sigma e^{-\theta t} \int_0^t e^{\theta s}\,dW_s
+}
+\]</div>
+<p>As <span class="math notranslate nohighlight">\(t \to \infty\)</span>, we get:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\mathbb{E}[X_t] \to \mu\)</span> (since <span class="math notranslate nohighlight">\(e^{-\theta t} \to 0\)</span> as <span class="math notranslate nohighlight">\(\theta &gt; 0\)</span>)</p></li>
+<li><p><span class="math notranslate nohighlight">\(\operatorname{Var}(X_t) \to \frac{\sigma^2}{2\theta}\)</span> (since <span class="math notranslate nohighlight">\(e^{-2\theta t} \to 0\)</span> as <span class="math notranslate nohighlight">\(\theta &gt; 0\)</span>)</p></li>
+</ul>
+<p>Therefore,</p>
+<div class="math notranslate nohighlight">
+\[
+X_t \overset{d}{\to} \mathcal{N}\left(\mu, \frac{\sigma^2}{2\theta}\right)
+\]</div>
+<p>The <a class="reference external" href="https://yogheswaran-a.github.io/blogs/01_weiner_process.html#reverse-time-equation">reverse time equation</a> is given by:</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{
+dX(t) = \left[\mu(X,t) - \sigma(X,t)\sigma(X,t)^\top \nabla_X \log p(X,t)\right]dt + \sigma(X,t)\,d\hat{W}_t
 }
 \]</div>
 </section>

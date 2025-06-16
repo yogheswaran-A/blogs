@@ -1026,15 +1026,32 @@ We saw OU process graph, we can see that after some time $T$ the final state is 
 Or more broadly for a stochastic process we have the forward equation given by :   
 
 $$ 
-dX(t) = \mu(t)dt + \sigma(t)dW_t 
+dX(t) = \mu(X,t)dt + \sigma(X,t)dW_t 
 $$
 
 for some initial state $X_0$. If we let this proces continue for some time $T$ and let the state be now $X_T$. Can go back in reverse direction? Can we start from $X_T$ a state from the final distribution and go back to a state from the intial distribution? The answer to that is YES!!.
 
-The reverse time equation allows us to do this, which is given by:
+The reverse-time SDE is:
 
 $$
-dX(t) = \left(\mu(t) - \sigma^2(t)\nabla_X \log p(X(t),t)\right)dt + \sigma(t)d\hat{W}_t
+\boxed{
+dX(t) = \left[\mu(X,t) - \sigma(X,t)\sigma(X,t)^\top \nabla_X \log p(X,t)\right]dt + \sigma(X,t)\,d\hat{W}_t
+}
 $$
 
-So by following this reverse SDE one can go back to a state from the initial  distribution.
+where:
+* $p(X,t)$ is the marginal density of $X(t)$,
+* $\nabla_X \log p(X,t)$ is the score function,
+* $\hat{W}_t$ is a Brownian motion with respect to the reverse-time filtration.
+
+So by following this reverse SDE one can go back to a state from the initial distribution.    
+Lets try to visualize what this says by considering an example, suppose we have 1000s of marbles and we are standing at the top of a 100 stairs staircase, the **width** of each stair case is very  long. Let each stair case denote the time step, so $t = 0$ will be top stair case, $t = 100$ will be bottom stair case. We release all the marbles from the middle of the top stairs. Here the distribution of the initial states ($t = 0$) will be the points in middle of the stair which the marbles are occupying. As the marbles travel down, they collide with the stair case(lets avoid the collison between each other), their movement will be random. As the marbles go down, each marbles position might be spread out of the middle. The probability of finding the marble at time $t = t$ (i,e stair case $t$ from above) will disperse from the centre, we can find more marbles as time goes on towards the left and right end of the staircase **width**. At each time step the probabiliy will evolve. At the t = 100, final stair, the probability of finding marble will have long tails.   
+Here (in the forward equation: $dX(t) = \mu(t)dt + \sigma(t)dW_t $ )
+1. $X$ is one of the marbles.
+1. The drift term is the force pushing the marble towards the downward direction, the gravity.  
+2. The $\sigma_t$ defines at each step how spread are the marbles away from the centre. 
+3. The $p(X,t)$ is the probability distribution of marbles at stair case $t$.
+
+The reverse time equation tells us how a marble from the last stair travels back and goes to the first stair.
+ 
+
