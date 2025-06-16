@@ -1306,15 +1306,32 @@ dX(t) = f(X,t)dt + \beta(t)dW_t = [a(t)X(t) + b(t)]dt + \beta(t)dW_t
 Or more broadly for a stochastic process we have the forward equation given by :</p>
 <div class="math notranslate nohighlight">
 \[ 
-dX(t) = \mu(t)dt + \sigma(t)dW_t 
+dX(t) = \mu(X,t)dt + \sigma(X,t)dW_t 
 \]</div>
 <p>for some initial state <span class="math notranslate nohighlight">\(X_0\)</span>. If we let this proces continue for some time <span class="math notranslate nohighlight">\(T\)</span> and let the state be now <span class="math notranslate nohighlight">\(X_T\)</span>. Can go back in reverse direction? Can we start from <span class="math notranslate nohighlight">\(X_T\)</span> a state from the final distribution and go back to a state from the intial distribution? The answer to that is YES!!.</p>
-<p>The reverse time equation allows us to do this, which is given by:</p>
+<p>The reverse-time SDE is:</p>
 <div class="math notranslate nohighlight">
 \[
-dX(t) = \left(\mu(t) - \sigma^2(t)\nabla_X \log p(X(t),t)\right)dt + \sigma(t)d\hat{W}_t
+\boxed{
+dX(t) = \left[\mu(X,t) - \sigma(X,t)\sigma(X,t)^\top \nabla_X \log p(X,t)\right]dt + \sigma(X,t)\,d\hat{W}_t
+}
 \]</div>
-<p>So by following this reverse SDE one can go back to a state from the initial  distribution.</p>
+<p>where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(p(X,t)\)</span> is the marginal density of <span class="math notranslate nohighlight">\(X(t)\)</span>,</p></li>
+<li><p><span class="math notranslate nohighlight">\(\nabla_X \log p(X,t)\)</span> is the score function,</p></li>
+<li><p><span class="math notranslate nohighlight">\(\hat{W}_t\)</span> is a Brownian motion with respect to the reverse-time filtration.</p></li>
+</ul>
+<p>So by following this reverse SDE one can go back to a state from the initial distribution.<br />
+Lets try to visualize what this says by considering an example, suppose we have 1000s of marbles and we are standing at the top of a 100 stairs staircase, the <strong>width</strong> of each stair case is very  long. Let each stair case denote the time step, so <span class="math notranslate nohighlight">\(t = 0\)</span> will be top stair case, <span class="math notranslate nohighlight">\(t = 100\)</span> will be bottom stair case. We release all the marbles from the middle of the top stairs. Here the distribution of the initial states (<span class="math notranslate nohighlight">\(t = 0\)</span>) will be the points in middle of the stair which the marbles are occupying. As the marbles travel down, they collide with the stair case(lets avoid the collison between each other), their movement will be random. As the marbles go down, each marbles position might be spread out of the middle. The probability of finding the marble at time <span class="math notranslate nohighlight">\(t = t\)</span> (i,e stair case <span class="math notranslate nohighlight">\(t\)</span> from above) will disperse from the centre, we can find more marbles as time goes on towards the left and right end of the staircase <strong>width</strong>. At each time step the probabiliy will evolve. At the t = 100, final stair, the probability of finding marble will have long tails.<br />
+Here (in the forward equation: <span class="math notranslate nohighlight">\(dX(t) = \mu(t)dt + \sigma(t)dW_t \)</span> )</p>
+<ol class="arabic simple">
+<li><p><span class="math notranslate nohighlight">\(X\)</span> is one of the marbles.</p></li>
+<li><p>The drift term is the force pushing the marble towards the downward direction, the gravity.</p></li>
+<li><p>The <span class="math notranslate nohighlight">\(\sigma_t\)</span> defines at each step how spread are the marbles away from the centre.</p></li>
+<li><p>The <span class="math notranslate nohighlight">\(p(X,t)\)</span> is the probability distribution of marbles at stair case <span class="math notranslate nohighlight">\(t\)</span>.</p></li>
+</ol>
+<p>The reverse time equation tells us how a marble from the last stair travels back and goes to the first stair.</p>
 </section>
 </section>
 

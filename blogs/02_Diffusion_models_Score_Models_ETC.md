@@ -15,11 +15,11 @@ Given a collection of images, we want to generate a new image that looks similar
 
 1. The collection of images represents a distribution of images, denoted by $P_I$. Our goal is to generate a sample from this same distribution.
 
-2. Since neural networks NNs are good at function approximation, we can train a NN to generate an image from the distribution $P_I$.
+2. Since neural networks NNs are good at function approximation, we can maybe train a NN to generate an image from the distribution $P_I$?
 
 3. What should the input to the network be? Ideally, it should be something simple and low-dimensional to make inference efficient. A common approach is to sample a vector $x$ from a standard Gaussian distribution $\mathcal{N}(0, I)$, so we'll use this as our input.
 
-Now, we want this Gaussian noise to eventually produce samples from $P_I$. Wait...isn’t this the reverse of the Ornstein–Uhlenbeck (OU) process? Yes it is. We start from a stationary distribution $P_I$ and should end in a stationary distribution $\mathcal{N}(0, I)$.
+Now, we want this Gaussian noise to eventually produce samples from $P_I$. Wait...isn’t this the reverse of the [Ornstein–Uhlenbeck (OU) process ](https://yogheswaran-a.github.io/blogs/01_weiner_process.html#ornstein-uhlenbeck-process)? Yes it is. We start from a stationary distribution $P_I$ and should end in a stationary distribution $\mathcal{N}(0, I)$.
 So what we need is to construct a stochastic process such that, as time progresses, $P_I$ evolves into $\mathcal{N}(0, I)$, that is, a **forward diffusion**. Then, by learning its **reverse process**, we can go from Gaussian noise back to realistic images.
 
 Okay, now how do I construct the forward process? Mathematically, the OU process is defined by the stochastic differential equation (SDE):
@@ -35,11 +35,29 @@ Here:
 * $\sigma$ controls the intensity of the randomness, and
 * $W_t$ is standard Brownian motion (Wiener process).
 
-The term $\theta(\mu - X_t) \, dt$ causes the process to drift back toward $\mu$ whenever it deviates, while $\sigma\,dW_t$ injects randomness into the motion. This balance between deterministic pull and random noise gives the OU process its characteristic wiggly but stable behavior.
-The classic Ornstein–Uhlenbeck process solution.
+The Ornstein–Uhlenbeck process solution is [given by](https://yogheswaran-a.github.io/blogs/01_weiner_process.html#ornstein-uhlenbeck-process):
 
 $$
 \boxed{
 X_t = e^{-\theta t} X_0 + \mu(1 - e^{-\theta t}) + \sigma e^{-\theta t} \int_0^t e^{\theta s}\,dW_s
 }
 $$
+
+As $t \to \infty$, we get:
+* $\mathbb{E}[X_t] \to \mu$ (since $e^{-\theta t} \to 0$ as $\theta > 0$)
+* $\operatorname{Var}(X_t) \to \frac{\sigma^2}{2\theta}$ (since $e^{-2\theta t} \to 0$ as $\theta > 0$)
+
+Therefore,
+
+$$
+X_t \overset{d}{\to} \mathcal{N}\left(\mu, \frac{\sigma^2}{2\theta}\right)
+$$
+
+The [reverse time equation](https://yogheswaran-a.github.io/blogs/01_weiner_process.html#reverse-time-equation) is given by:   
+
+$$
+\boxed{
+dX(t) = \left[\mu(X,t) - \sigma(X,t)\sigma(X,t)^\top \nabla_X \log p(X,t)\right]dt + \sigma(X,t)\,d\hat{W}_t
+}
+$$
+
