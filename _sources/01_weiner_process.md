@@ -1,5 +1,9 @@
-
 # SDE, Weiner Process, ITO's Lemma and Reverse Time Equation
+
+Most of the posts start with a pic or a qoute, I'm going to start with a lame joke (credit goes to reddit).      
+
+Why did Hilbert’s Hotel get 1 star on Trivago?   
+Because they kept shifting rooms, booked room 1 and ended up in infinity.
 
 ## Motivation
 I wrote this blog as I was trying to understand the math behind the diffusion model.Though one can understand the algorithm of differernt types of formulation under diffusion models such as herirachical VAE, Score based models, Rectiflow, flow models without knowing much about SDE, to understand in detail why they all fall under the same category I beleive a deeper understanding of weineer process, stochastic calculas, ITO's lemma, forward and backward equations etc are needed.     
