@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Flow Matching: The Theory Behind Stable Diffusion - 3. &#8212; Blogs</title>
+    <title>Blog 02: Flow Matching: The Theory Behind Stable Diffusion - 3. &#8212; Blogs</title>
   
   
   
@@ -62,8 +62,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = '02_Flow_Matching_I';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Viewing Diffusion, Score, Rectified flow, Heirrachical VAEs From The Same Lens" href="03_Diffusion_models_I.html" />
-    <link rel="prev" title="SDE, Weiner Process, ITO’s Lemma and Reverse Time Equation" href="01_weiner_process.html" />
+    <link rel="next" title="Blog 02: Flow Matching: The Theory Behind Stable Diffusion - 3." href="03_Diffusion_models_I.html" />
+    <link rel="prev" title="Blog 01: SDE, Weiner Process, ITO’s Lemma and Reverse Time Equation" href="01_weiner_process.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -176,9 +176,10 @@
             </li>
         </ul>
         <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="01_weiner_process.html">SDE, Weiner Process, ITO’s Lemma and Reverse Time Equation</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Flow Matching: The Theory Behind Stable Diffusion - 3.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="03_Diffusion_models_I.html">Viewing Diffusion, Score, Rectified flow, Heirrachical VAEs From The Same Lens</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01_weiner_process.html">Blog 01: SDE, Weiner Process, ITO’s Lemma and Reverse Time Equation</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Blog 02: Flow Matching: The Theory Behind Stable Diffusion - 3.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_Diffusion_models_I.html">Blog 02: Flow Matching: The Theory Behind Stable Diffusion - 3.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_Diffusion_models_II.html">Blog 03: Viewing Diffusion, Score, Rectified flow, Heirrachical VAEs From The Same Lens</a></li>
 </ul>
 
     </div>
@@ -364,7 +365,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Flow Matching: The Theory Behind Stable Diffusion - 3.</h1>
+    <h1>Blog 02: Flow Matching: The Theory Behind Stable Diffusion - 3.</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -374,7 +375,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-post-about">What is post about?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-the-post-about">What is the post about?</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#marginal-target">Marginal Target</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flow-matching-constructing-the-loss-function">Flow Matching: Constructing the Loss Function</a></li>
@@ -397,13 +398,13 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="flow-matching-the-theory-behind-stable-diffusion-3">
-<h1>Flow Matching: The Theory Behind Stable Diffusion - 3.<a class="headerlink" href="#flow-matching-the-theory-behind-stable-diffusion-3" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="blog-02-flow-matching-the-theory-behind-stable-diffusion-3">
+<h1>Blog 02: Flow Matching: The Theory Behind Stable Diffusion - 3.<a class="headerlink" href="#blog-02-flow-matching-the-theory-behind-stable-diffusion-3" title="Link to this heading">#</a></h1>
 <p>Most of the posts start with a pic or a qoute, I’m going to start with a lame joke.</p>
 <p>A gaussian noise and MINST dataset fell in love with each other. How did they meet?<br />
 They used flow matching app.</p>
-<section id="what-is-post-about">
-<h2>What is post about?<a class="headerlink" href="#what-is-post-about" title="Link to this heading">#</a></h2>
+<section id="what-is-the-post-about">
+<h2>What is the post about?<a class="headerlink" href="#what-is-the-post-about" title="Link to this heading">#</a></h2>
 <p>Diffusion models and flow matching have improved image generation(they both can be wriiten under the same formulation). In this blog post I will write my learnings about flow matching from the ground up, which was used to develop SD3, open ai SORA, Meta’s movie gen video, etc. The topis covered are:</p>
 <ol class="arabic simple">
 <li><p>Flow matching theory with self contained proofs.</p></li>
@@ -820,7 +821,7 @@ u_{t}^{\text{target}}(x|z) = \left( \dot{\alpha}_t - \frac{\dot{\beta}_t}{\beta_
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">SDE, Weiner Process, ITO’s Lemma and Reverse Time Equation</p>
+        <p class="prev-next-title">Blog 01: SDE, Weiner Process, ITO’s Lemma and Reverse Time Equation</p>
       </div>
     </a>
     <a class="right-next"
@@ -828,7 +829,7 @@ u_{t}^{\text{target}}(x|z) = \left( \dot{\alpha}_t - \frac{\dot{\beta}_t}{\beta_
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Viewing Diffusion, Score, Rectified flow, Heirrachical VAEs From The Same Lens</p>
+        <p class="prev-next-title">Blog 02: Flow Matching: The Theory Behind Stable Diffusion - 3.</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -848,7 +849,7 @@ u_{t}^{\text{target}}(x|z) = \left( \dot{\alpha}_t - \frac{\dot{\beta}_t}{\beta_
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-post-about">What is post about?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-the-post-about">What is the post about?</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#marginal-target">Marginal Target</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flow-matching-constructing-the-loss-function">Flow Matching: Constructing the Loss Function</a></li>

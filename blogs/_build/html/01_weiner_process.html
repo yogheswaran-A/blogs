@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>SDE, Weiner Process, ITO’s Lemma and Reverse Time Equation &#8212; Blogs</title>
+    <title>Blog 01: SDE, Weiner Process, ITO’s Lemma and Reverse Time Equation &#8212; Blogs</title>
   
   
   
@@ -62,7 +62,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = '01_weiner_process';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Flow Matching: The Theory Behind Stable Diffusion - 3." href="02_Flow_Matching_I.html" />
+    <link rel="next" title="Blog 02: Flow Matching: The Theory Behind Stable Diffusion - 3." href="02_Flow_Matching_I.html" />
     <link rel="prev" title="Blogs Landing Page" href="00_landing_page.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -176,9 +176,10 @@
             </li>
         </ul>
         <ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">SDE, Weiner Process, ITO’s Lemma and Reverse Time Equation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="02_Flow_Matching_I.html">Flow Matching: The Theory Behind Stable Diffusion - 3.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="03_Diffusion_models_I.html">Viewing Diffusion, Score, Rectified flow, Heirrachical VAEs From The Same Lens</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Blog 01: SDE, Weiner Process, ITO’s Lemma and Reverse Time Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_Flow_Matching_I.html">Blog 02: Flow Matching: The Theory Behind Stable Diffusion - 3.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_Diffusion_models_I.html">Blog 02: Flow Matching: The Theory Behind Stable Diffusion - 3.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_Diffusion_models_II.html">Blog 03: Viewing Diffusion, Score, Rectified flow, Heirrachical VAEs From The Same Lens</a></li>
 </ul>
 
     </div>
@@ -364,7 +365,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>SDE, Weiner Process, ITO’s Lemma and Reverse Time Equation</h1>
+    <h1>Blog 01: SDE, Weiner Process, ITO’s Lemma and Reverse Time Equation</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -414,8 +415,8 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="sde-weiner-process-ito-s-lemma-and-reverse-time-equation">
-<h1>SDE, Weiner Process, ITO’s Lemma and Reverse Time Equation<a class="headerlink" href="#sde-weiner-process-ito-s-lemma-and-reverse-time-equation" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="blog-01-sde-weiner-process-ito-s-lemma-and-reverse-time-equation">
+<h1>Blog 01: SDE, Weiner Process, ITO’s Lemma and Reverse Time Equation<a class="headerlink" href="#blog-01-sde-weiner-process-ito-s-lemma-and-reverse-time-equation" title="Link to this heading">#</a></h1>
 <p>Most of the posts start with a pic or a qoute, I’m going to start with a lame joke (credit goes to reddit).</p>
 <p>Why did Hilbert’s Hotel get 1 star on Trivago?<br />
 Because they kept shifting rooms, booked room 1 and ended up in infinity.</p>
@@ -1274,11 +1275,25 @@ d[\mu(t)X(t)] = \mu(t)b(t)\,dt + \mu(t)\beta(t)\,dW_t
 \[
 X(t) = X_0 \exp\left( \int_0^t a(s)\,ds \right) + \exp\left( \int_0^t a(s)\,ds \right) \int_0^t \mu(s)b(s)\,ds + \exp\left( \int_0^t a(s)\,ds \right) \int_0^t \mu(s)\beta(s)\,dW_s
 \]</div>
+<p>Note that, <span class="math notranslate nohighlight">\(\exp\left(\int_0^t a(s)ds\right) = \frac{1}{\mu(t)}\)</span> and<br />
+<span class="math notranslate nohighlight">\(\exp\left(\int_0^t a(s)ds\right) \cdot \mu(s) = \exp\left(\int_0^t a(u)du\right) \cdot \exp\left(-\int_0^s a(u)du\right) = \exp\left(\int_s^t a(u)du\right)
+\)</span></p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{
+X(t) = \exp\left(\int_0^t a(s)ds\right)X_0 + \int_0^t \exp\left(\int_s^t a(u)du\right)b(s)ds + \int_0^t \exp\left(\int_s^t a(u)du\right)\beta(s)dW_s
+}
+\]</div>
 <p>Each term is now a linear combination of deterministic functions and a stochastic integral with deterministic integrand.</p>
 <p>From the solution, <span class="math notranslate nohighlight">\(X(t)\)</span> can be written as:</p>
 <div class="math notranslate nohighlight">
 \[
 X(t) = \text{Deterministic part} + \exp\left( \int_0^t a(s)ds \right)\int_0^t \mu(s)\beta(s)dW_s
+\]</div>
+<p>Mean is:</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbb{E}[X(t)] = \exp\left(\int_0^t a(s)ds\right)\mathbb{E}[X_0] + \int_0^t \exp\left(\int_s^t a(u)du\right)b(s)ds
 \]</div>
 <p>The stochastic part is:</p>
 <div class="math notranslate nohighlight">
@@ -1295,6 +1310,8 @@ X(t) = \text{Deterministic part} + \exp\left( \int_0^t a(s)ds \right)\int_0^t \m
 \[
 \operatorname{Var}\left( \exp\left( \int_0^t a(s)ds \right)\int_0^t \mu(s)\beta(s)dW_s \right) = \exp\left( 2\int_0^t a(s)ds \right) \int_0^t \left[\exp\left( -\int_0^t a(s) ds \right)\beta(s)\right]^2\,ds
 \]</div>
+<div class="math notranslate nohighlight">
+\[\text{Var}(X(t)) = \int_0^t \exp\left(2\int_s^t a(u)du\right) \beta(s)^2 ds\]</div>
 <p>Hence <span class="math notranslate nohighlight">\(X(t)\)</span> is a linear transformation of a Gaussian random variable, plus deterministic terms. Therefore:</p>
 <p><span class="math notranslate nohighlight">\(X(t) \mid X_0\)</span> is normally distributed for all <span class="math notranslate nohighlight">\(t\)</span>, i.e., Gaussian.</p>
 <p>So , If <span class="math notranslate nohighlight">\(f(x,t) = a(t)x + b(t)\)</span> and <span class="math notranslate nohighlight">\(\beta(x,t) = \beta(t)\)</span> (i.e., independent of <span class="math notranslate nohighlight">\(x\)</span>), then the SDE:</p>
@@ -1383,7 +1400,7 @@ Here (in the forward equation: <span class="math notranslate nohighlight">\(dX(t
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Flow Matching: The Theory Behind Stable Diffusion - 3.</p>
+        <p class="prev-next-title">Blog 02: Flow Matching: The Theory Behind Stable Diffusion - 3.</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

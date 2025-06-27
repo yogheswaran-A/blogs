@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Blog 02: Flow Matching: The Theory Behind Stable Diffusion - 3. &#8212; Blogs</title>
+    <title>Blog 03: Viewing Diffusion, Score, Rectified flow, Heirrachical VAEs From The Same Lens &#8212; Blogs</title>
   
   
   
@@ -59,11 +59,10 @@
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '03_Diffusion_models_I';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '04_Diffusion_models_II';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Blog 03: Viewing Diffusion, Score, Rectified flow, Heirrachical VAEs From The Same Lens" href="04_Diffusion_models_II.html" />
-    <link rel="prev" title="Blog 02: Flow Matching: The Theory Behind Stable Diffusion - 3." href="02_Flow_Matching_I.html" />
+    <link rel="prev" title="Blog 02: Flow Matching: The Theory Behind Stable Diffusion - 3." href="03_Diffusion_models_I.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -178,8 +177,8 @@
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="01_weiner_process.html">Blog 01: SDE, Weiner Process, ITO’s Lemma and Reverse Time Equation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="02_Flow_Matching_I.html">Blog 02: Flow Matching: The Theory Behind Stable Diffusion - 3.</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Blog 02: Flow Matching: The Theory Behind Stable Diffusion - 3.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="04_Diffusion_models_II.html">Blog 03: Viewing Diffusion, Score, Rectified flow, Heirrachical VAEs From The Same Lens</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_Diffusion_models_I.html">Blog 02: Flow Matching: The Theory Behind Stable Diffusion - 3.</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Blog 03: Viewing Diffusion, Score, Rectified flow, Heirrachical VAEs From The Same Lens</a></li>
 </ul>
 
     </div>
@@ -251,7 +250,7 @@
       
       
       
-      <li><a href="https://github.com/yogheswaran-a/blogs/issues/new?title=Issue%20on%20page%20%2F03_Diffusion_models_I.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/yogheswaran-a/blogs/issues/new?title=Issue%20on%20page%20%2F04_Diffusion_models_II.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -281,7 +280,7 @@
       
       
       
-      <li><a href="_sources/03_Diffusion_models_I.md" target="_blank"
+      <li><a href="_sources/04_Diffusion_models_II.md" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -365,7 +364,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Blog 02: Flow Matching: The Theory Behind Stable Diffusion - 3.</h1>
+    <h1>Blog 03: Viewing Diffusion, Score, Rectified flow, Heirrachical VAEs From The Same Lens</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -375,17 +374,9 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-the-post-about">What is the post about?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pre-requiste">Pre-requiste</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#constructing-the-forward-process">Constructing the Forward Process</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#solution-of-the-sde">Solution of the SDE</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-goal-a-simple-known-prior">The Goal: A Simple Known Prior</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reverse-process">Reverse Process</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contents">Contents</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pre-requistes">Pre requistes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diffusion-models">Diffusion Models</a></li>
 </ul>
             </nav>
         </div>
@@ -397,84 +388,66 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="blog-02-flow-matching-the-theory-behind-stable-diffusion-3">
-<h1>Blog 02: Flow Matching: The Theory Behind Stable Diffusion - 3.<a class="headerlink" href="#blog-02-flow-matching-the-theory-behind-stable-diffusion-3" title="Link to this heading">#</a></h1>
-<blockquote>
-<div><p><strong>We can know only that we know nothing. And that is the highest degree of human wisdom.</strong><br />
-— <em>Leo Tolstoy, War and Peace</em>.</p>
-</div></blockquote>
+  <section class="tex2jax_ignore mathjax_ignore" id="blog-03-viewing-diffusion-score-rectified-flow-heirrachical-vaes-from-the-same-lens">
+<h1>Blog 03: Viewing Diffusion, Score, Rectified flow, Heirrachical VAEs From The Same Lens<a class="headerlink" href="#blog-03-viewing-diffusion-score-rectified-flow-heirrachical-vaes-from-the-same-lens" title="Link to this heading">#</a></h1>
+<p>This blog contains the basics, derivations, intuition and idea behind diffusion models, score based models, Heirrachical VAEs and rectified flow. I have also explained how these formulations relate to one another and comes under the same umberala. I will start with each formulation and as we progress we will see how all of these fall under the same umberela.</p>
+<section id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p>general case, po = some static distribution, pf = p_data, langevian dynamics.</p></li>
-<li><p>conditional gaussion trnsitions, affince drift co-efficiet</p></li>
-<li><p>OU process for final VP</p></li>
+<li><p>Diffuions Models</p></li>
 </ul>
-<section id="what-is-the-post-about">
-<h2>What is the post about?<a class="headerlink" href="#what-is-the-post-about" title="Link to this heading">#</a></h2>
-<p>Diffusion models and flow matching have improved image generation(they both can be wriiten under the same formulation). In this blog post I will write my learnings about diffusion models from the ground up. The topis covered are:</p>
+</section>
+<section id="pre-requistes">
+<h2>Pre requistes<a class="headerlink" href="#pre-requistes" title="Link to this heading">#</a></h2>
+<p>For understanding diffusion: SDEs, Ito’s lemma, OU process, Forward And Backward. One can read more about this in my previous <a class="reference external" href="https://yogheswaran-a.github.io/blogs/01_weiner_process.html">blog post</a>.</p>
+</section>
+<section id="diffusion-models">
+<h2>Diffusion Models<a class="headerlink" href="#diffusion-models" title="Link to this heading">#</a></h2>
+<p>Here is the problem statement:<br />
+Given a collection of images, we want to generate a new image that looks similar to those in the dataset. How might we solve this problem using our knowledge of <strong>Stochastic Differential Equations (SDEs)</strong>? Some thoughts:</p>
 <ol class="arabic simple">
-<li><p>Diffusion theory with self contained proofs.</p></li>
-<li><p>Guidance.</p></li>
-<li><p>Training a model on MINST dataset.</p></li>
+<li><p>The collection of images represents a distribution of images, denoted by <span class="math notranslate nohighlight">\(P_I\)</span>. Our goal is to generate a sample from this same distribution.</p></li>
+<li><p>Since neural networks NNs are good at function approximation, we can maybe train a NN to generate an image from the distribution <span class="math notranslate nohighlight">\(P_I\)</span>?</p></li>
+<li><p>What should the input to the network be? Ideally, it should be something simple and low-dimensional to make inference efficient. A common approach is to sample a vector <span class="math notranslate nohighlight">\(x\)</span> from a standard Gaussian distribution <span class="math notranslate nohighlight">\(\mathcal{N}(0, I)\)</span>, so we’ll use this as our input.</p></li>
 </ol>
-<p>I think the MIT’s course <a class="reference external" href="https://diffusion.csail.mit.edu/">Introduction to Flow Matching and Diffusion Models</a> (thanks a lot!!) is much better than what I have written, I learned from it, please take a look at it, they have notes, codes and video lectures. This post is inspired from it.</p>
-</section>
-<section id="pre-requiste">
-<h2>Pre-requiste<a class="headerlink" href="#pre-requiste" title="Link to this heading">#</a></h2>
-<p>Knowledge of stachastic Process and calculas are needed. My previous blog post on <a class="reference external" href="https://yogheswaran-a.github.io/blogs/01_weiner_process.html">SDE</a> covers the neccesary topics, and I believe it is self contained.</p>
-</section>
-<section id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
-<p>Given a collection of images, we want to generate a new image that looks similar to those in the dataset. How might we solve this problem using our knowledge of Stochastic Differential Equations (SDEs)?</p>
-<p>The collection of images represents a data distribution, denoted by <span class="math notranslate nohighlight">\(P_{\text{data}}\)</span>. Our goal is to generate samples from this same distribution.</p>
-<p>Since neural networks (NNs) are excellent function approximators, we can train a NN to generate images from the distribution <span class="math notranslate nohighlight">\(P_{\text{data}}\)</span>.</p>
-<p>The input to the network should be simple to sample from. A standard approach is to use a vector <span class="math notranslate nohighlight">\(z\)</span> sampled from a standard Gaussian distribution, <span class="math notranslate nohighlight">\(\mathcal{N}(0,I)\)</span>.</p>
-<p>We now need a principled way to transform this Gaussian noise into a sample from <span class="math notranslate nohighlight">\(P_{\text{data}}\)</span>. This sounds like the reverse of a process that corrupts data into noise. This is precisely the core idea behind score-based generative models.</p>
-<p>We can construct a forward process that gradually adds noise to an image from <span class="math notranslate nohighlight">\(P_{\text{data}}\)</span> over a time interval <span class="math notranslate nohighlight">\([0,T]\)</span>, until it becomes indistinguishable from pure Gaussian noise. This is our forward diffusion process. If we can learn to reverse this process, we can start with noise at time <span class="math notranslate nohighlight">\(T\)</span> and generate a clean image at time <span class="math notranslate nohighlight">\(0\)</span>.</p>
-</section>
-<section id="constructing-the-forward-process">
-<h2>Constructing the Forward Process<a class="headerlink" href="#constructing-the-forward-process" title="Link to this heading">#</a></h2>
-<p>Mathematically, we can model this forward diffusion using an SDE. A common and tractable choice is a process with linear coefficients:</p>
+<p>Now, we want this Gaussian noise to eventually produce samples from <span class="math notranslate nohighlight">\(P_I\)</span>. Wait…isn’t this the reverse of the <a class="reference external" href="https://yogheswaran-a.github.io/blogs/01_weiner_process.html#ornstein-uhlenbeck-process">Ornstein–Uhlenbeck (OU) process </a>? Yes it is. We start from a stationary distribution <span class="math notranslate nohighlight">\(P_I\)</span> and should end in a stationary distribution <span class="math notranslate nohighlight">\(\mathcal{N}(0, I)\)</span>.
+So what we need is to construct a stochastic process such that, as time progresses, <span class="math notranslate nohighlight">\(P_I\)</span> evolves into <span class="math notranslate nohighlight">\(\mathcal{N}(0, I)\)</span>, that is, a <strong>forward diffusion</strong>. Then, by learning its <strong>reverse process</strong>, we can go from Gaussian noise back to realistic images.</p>
+<p>Okay, now how do I construct the forward process? Mathematically, the OU process is defined by the stochastic differential equation (SDE):</p>
 <div class="math notranslate nohighlight">
-\[dx_t = f(x_t,t)dt + g(t)dw_t\]</div>
-<p>where:</p>
+\[
+dX_t = \theta(\mu - X_t)\,dt + \sigma\,dW_t
+\]</div>
+<p>Here:</p>
 <ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(x_t\)</span> is the noisy image at time <span class="math notranslate nohighlight">\(t\)</span>.</p></li>
-<li><p><span class="math notranslate nohighlight">\(f(x_t,t)\)</span> is the drift function, which governs the deterministic evolution of the process. For simplicity and analytical tractability, we choose a linear form: <span class="math notranslate nohighlight">\(f(x_t,t) = a(t)x_t + b(t)\)</span>.</p></li>
-<li><p><span class="math notranslate nohighlight">\(g(t)\)</span> is the diffusion coefficient, controlling the magnitude of the random noise added at time <span class="math notranslate nohighlight">\(t\)</span>.</p></li>
-<li><p><span class="math notranslate nohighlight">\(w_t\)</span> is a standard Wiener process (Brownian motion).</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mu\)</span> is the long-term mean toward which the process is pulled,</p></li>
+<li><p><span class="math notranslate nohighlight">\(\theta &gt; 0\)</span> is the rate of mean reversion,</p></li>
+<li><p><span class="math notranslate nohighlight">\(\sigma\)</span> controls the intensity of the randomness, and</p></li>
+<li><p><span class="math notranslate nohighlight">\(W_t\)</span> is standard Brownian motion (Wiener process).</p></li>
 </ul>
-<p>This gives us the following linear SDE:
-$<span class="math notranslate nohighlight">\(dx_t = (a(t)x_t + b(t))dt + g(t)dw_t\)</span>$</p>
-<section id="solution-of-the-sde">
-<h3>Solution of the SDE<a class="headerlink" href="#solution-of-the-sde" title="Link to this heading">#</a></h3>
-<p>This linear SDE has an analytical solution. Given an initial data point <span class="math notranslate nohighlight">\(x_0 \sim P_{\text{data}}\)</span>, the state <span class="math notranslate nohighlight">\(x_t\)</span> at any time <span class="math notranslate nohighlight">\(t\)</span> can be expressed as a conditional Gaussian distribution.
-The solution is found using an integrating factor, similar to solving linear ordinary differential equations. The resulting distribution of <span class="math notranslate nohighlight">\(x_t\)</span> conditioned on <span class="math notranslate nohighlight">\(x_0\)</span> is:</p>
-<div class="math notranslate nohighlight">
-\[p(x_t|x_0) = \mathcal{N}(x_t; \mu_t, \sigma_t^2 I)\]</div>
-</section>
-</section>
-<section id="the-goal-a-simple-known-prior">
-<h2>The Goal: A Simple Known Prior<a class="headerlink" href="#the-goal-a-simple-known-prior" title="Link to this heading">#</a></h2>
-<p>The key is to design the functions <span class="math notranslate nohighlight">\(a(t)\)</span>, <span class="math notranslate nohighlight">\(b(t)\)</span>, and <span class="math notranslate nohighlight">\(g(t)\)</span> such that, at the end of the process at time <span class="math notranslate nohighlight">\(T\)</span>, the distribution of <span class="math notranslate nohighlight">\(x_T\)</span> is independent of the starting point <span class="math notranslate nohighlight">\(x_0\)</span> and converges to our desired simple prior, <span class="math notranslate nohighlight">\(\mathcal{N}(0,I)\)</span>.</p>
-<p>A widely used example is the Variance Preserving (VP) SDE, which is closely related to the Ornstein-Uhlenbeck process. In this case, we can set <span class="math notranslate nohighlight">\(b(t)=0\)</span> and choose <span class="math notranslate nohighlight">\(a(t)\)</span> and <span class="math notranslate nohighlight">\(g(t)\)</span> carefully. For the VP SDE, the conditional distribution simplifies to:</p>
-<div class="math notranslate nohighlight">
-\[p(x_t|x_0) = \mathcal{N}(x_t; \alpha(t)x_0, [1-\alpha(t)^2]I)\]</div>
-<p>Here, <span class="math notranslate nohighlight">\(\alpha(t)\)</span> is a schedule function that decreases from <span class="math notranslate nohighlight">\(\alpha(0)=1\)</span> to <span class="math notranslate nohighlight">\(\alpha(T) \approx 0\)</span>. As <span class="math notranslate nohighlight">\(t \to T\)</span>:</p>
-<ul class="simple">
-<li><p>The mean, <span class="math notranslate nohighlight">\(\alpha(T)x_0\)</span>, approaches <span class="math notranslate nohighlight">\(0\)</span>, effectively erasing the initial information from <span class="math notranslate nohighlight">\(x_0\)</span>.</p></li>
-<li><p>The variance, <span class="math notranslate nohighlight">\(1-\alpha(T)^2\)</span>, approaches <span class="math notranslate nohighlight">\(1\)</span>.</p></li>
-</ul>
-<p>Therefore, the distribution <span class="math notranslate nohighlight">\(p(x_T) = \int p(x_T|x_0)p_{\text{data}}(x_0)dx_0\)</span> will approach <span class="math notranslate nohighlight">\(\mathcal{N}(0,I)\)</span>. We have successfully transformed our complex data distribution into simple Gaussian noise. The next step, which involves training a neural network, is to learn the reverse SDE that takes us from <span class="math notranslate nohighlight">\(x_T\)</span> back to <span class="math notranslate nohighlight">\(x_0\)</span>.</p>
-<section id="reverse-process">
-<h3>Reverse Process<a class="headerlink" href="#reverse-process" title="Link to this heading">#</a></h3>
-<p>The <a class="reference external" href="https://yogheswaran-a.github.io/blogs/01_weiner_process.html#reverse-time-equation">reverse-time SDE</a> is given by:</p>
+<p>The Ornstein–Uhlenbeck process solution is <a class="reference external" href="https://yogheswaran-a.github.io/blogs/01_weiner_process.html#ornstein-uhlenbeck-process">given by</a>:</p>
 <div class="math notranslate nohighlight">
 \[
 \boxed{
-dX(t) = \left[\mu(X,t) - \sigma(X,t)\sigma(X,t)^\top \nabla_X \log p(X,t)\right]\,dt + \sigma(X,t)\,d\hat{W}_t
+X_t = e^{-\theta t} X_0 + \mu(1 - e^{-\theta t}) + \sigma e^{-\theta t} \int_0^t e^{\theta s}\,dW_s
 }
 \]</div>
-</section>
+<p>As <span class="math notranslate nohighlight">\(t \to \infty\)</span>, we get:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\mathbb{E}[X_t] \to \mu\)</span> (since <span class="math notranslate nohighlight">\(e^{-\theta t} \to 0\)</span> as <span class="math notranslate nohighlight">\(\theta &gt; 0\)</span>)</p></li>
+<li><p><span class="math notranslate nohighlight">\(\operatorname{Var}(X_t) \to \frac{\sigma^2}{2\theta}\)</span> (since <span class="math notranslate nohighlight">\(e^{-2\theta t} \to 0\)</span> as <span class="math notranslate nohighlight">\(\theta &gt; 0\)</span>)</p></li>
+</ul>
+<p>Therefore,</p>
+<div class="math notranslate nohighlight">
+\[
+X_t \overset{d}{\to} \mathcal{N}\left(\mu, \frac{\sigma^2}{2\theta}\right)
+\]</div>
+<p>The <a class="reference external" href="https://yogheswaran-a.github.io/blogs/01_weiner_process.html#reverse-time-equation">reverse time equation</a> is given by:</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{
+dX(t) = \left[\mu(X,t) - \sigma(X,t)\sigma(X,t)^\top \nabla_X \log p(X,t)\right]dt + \sigma(X,t)\,d\hat{W}_t
+}
+\]</div>
 </section>
 </section>
 
@@ -509,22 +482,13 @@ dX(t) = \left[\mu(X,t) - \sigma(X,t)\sigma(X,t)^\top \nabla_X \log p(X,t)\right]
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="02_Flow_Matching_I.html"
+       href="03_Diffusion_models_I.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
         <p class="prev-next-title">Blog 02: Flow Matching: The Theory Behind Stable Diffusion - 3.</p>
       </div>
-    </a>
-    <a class="right-next"
-       href="04_Diffusion_models_II.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Blog 03: Viewing Diffusion, Score, Rectified flow, Heirrachical VAEs From The Same Lens</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
                 </footer>
@@ -542,17 +506,9 @@ dX(t) = \left[\mu(X,t) - \sigma(X,t)\sigma(X,t)^\top \nabla_X \log p(X,t)\right]
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-the-post-about">What is the post about?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pre-requiste">Pre-requiste</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#constructing-the-forward-process">Constructing the Forward Process</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#solution-of-the-sde">Solution of the SDE</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-goal-a-simple-known-prior">The Goal: A Simple Known Prior</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reverse-process">Reverse Process</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contents">Contents</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pre-requistes">Pre requistes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diffusion-models">Diffusion Models</a></li>
 </ul>
   </nav></div>
 

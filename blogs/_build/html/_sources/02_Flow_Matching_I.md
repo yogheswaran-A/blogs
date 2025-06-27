@@ -1,11 +1,11 @@
-# Flow Matching: The Theory Behind Stable Diffusion - 3.
+# Blog 02: Flow Matching: The Theory Behind Stable Diffusion - 3.
 
 Most of the posts start with a pic or a qoute, I'm going to start with a lame joke.
 
 A gaussian noise and MINST dataset fell in love with each other. How did they meet?   
 They used flow matching app.
 
-## What is post about?
+## What is the post about?
 
 Diffusion models and flow matching have improved image generation(they both can be wriiten under the same formulation). In this blog post I will write my learnings about flow matching from the ground up, which was used to develop SD3, open ai SORA, Meta's movie gen video, etc. The topis covered are:
 
