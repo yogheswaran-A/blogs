@@ -1,4 +1,4 @@
-# Blog 02: Diffusion Models
+# Blog 03: Diffusion Models
 
 > **We can know only that we know nothing. And that is the highest degree of human wisdom.**  
 > — *Leo Tolstoy, War and Peace*.
