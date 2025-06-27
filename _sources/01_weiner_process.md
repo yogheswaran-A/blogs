@@ -1,4 +1,4 @@
-# SDE, Weiner Process, ITO's Lemma and Reverse Time Equation
+# Blog 01: SDE, Weiner Process, ITO's Lemma and Reverse Time Equation
 
 Most of the posts start with a pic or a qoute, I'm going to start with a lame joke (credit goes to reddit).      
 
@@ -988,6 +988,15 @@ Multiplying both sides by $\mu(t)^{-1} = \exp\left(\int_0^t a(s)\,ds\right)$:
 $$
 X(t) = X_0 \exp\left( \int_0^t a(s)\,ds \right) + \exp\left( \int_0^t a(s)\,ds \right) \int_0^t \mu(s)b(s)\,ds + \exp\left( \int_0^t a(s)\,ds \right) \int_0^t \mu(s)\beta(s)\,dW_s
 $$
+Note that, $\exp\left(\int_0^t a(s)ds\right) = \frac{1}{\mu(t)}$ and     
+$\exp\left(\int_0^t a(s)ds\right) \cdot \mu(s) = \exp\left(\int_0^t a(u)du\right) \cdot \exp\left(-\int_0^s a(u)du\right) = \exp\left(\int_s^t a(u)du\right)
+$
+
+$$
+\boxed{
+X(t) = \exp\left(\int_0^t a(s)ds\right)X_0 + \int_0^t \exp\left(\int_s^t a(u)du\right)b(s)ds + \int_0^t \exp\left(\int_s^t a(u)du\right)\beta(s)dW_s
+}
+$$  
 
 Each term is now a linear combination of deterministic functions and a stochastic integral with deterministic integrand.
 
@@ -995,6 +1004,12 @@ From the solution, $X(t)$ can be written as:
 
 $$
 X(t) = \text{Deterministic part} + \exp\left( \int_0^t a(s)ds \right)\int_0^t \mu(s)\beta(s)dW_s
+$$
+
+Mean is:
+
+$$
+\mathbb{E}[X(t)] = \exp\left(\int_0^t a(s)ds\right)\mathbb{E}[X_0] + \int_0^t \exp\left(\int_s^t a(u)du\right)b(s)ds
 $$
 
 The stochastic part is:
@@ -1011,6 +1026,9 @@ This is a stochastic integral of a deterministic function, hence:
 $$
 \operatorname{Var}\left( \exp\left( \int_0^t a(s)ds \right)\int_0^t \mu(s)\beta(s)dW_s \right) = \exp\left( 2\int_0^t a(s)ds \right) \int_0^t \left[\exp\left( -\int_0^t a(s) ds \right)\beta(s)\right]^2\,ds
 $$
+
+$$\text{Var}(X(t)) = \int_0^t \exp\left(2\int_s^t a(u)du\right) \beta(s)^2 ds$$
+
 
 Hence $X(t)$ is a linear transformation of a Gaussian random variable, plus deterministic terms. Therefore:
 
