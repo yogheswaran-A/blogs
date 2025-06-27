@@ -456,6 +456,11 @@ Stable Diffusion 3 and Meta’s Movie Gen Video are trained using this loss func
 > 7. &nbsp;&nbsp;&nbsp;&nbsp;Update the model parameters $\theta$ via gradient descent on $\mathcal{L}(\theta)$.
 > 8. **end for**
 
+## Guidance
+TD
+
+## training code
+TD
 
 ## Appendix
 
