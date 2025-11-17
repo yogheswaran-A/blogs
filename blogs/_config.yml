@@ -31,6 +31,9 @@ repository:
 html:
   use_issues_button: true
   use_repository_button: true
+  theme:
+    options:
+      default_mode: light
 
 html_theme_options:  
   collapse_navigation: true

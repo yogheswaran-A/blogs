@@ -8,3 +8,4 @@ chapters:
 - file: 02_Flow_Matching_I
 #- file: 03_Diffusion_models_I
 #- file: 04_Diffusion_models_II
+- file: 05_Policy_Gradient_PPO_GRPO

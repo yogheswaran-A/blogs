@@ -1,3 +1,5 @@
+# Activate environemtn: conda activate jupyterbook
+
 # First time
 ## Steps
 ### 1. Folder structure: 
@@ -24,6 +26,7 @@
 2) Under branch select gh-pages, select /root and save.
 ### 11. Under action see if it is deployed.
 
+# Activate environemtn: conda activate jupyterbook
 # Second time
 ## Steps
 ### 1. cd into blogs(outside) folder
