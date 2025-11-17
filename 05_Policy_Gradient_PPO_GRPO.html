@@ -1,0 +1,1161 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Blog 05: Policy Gradient, TRPO, PPO and GRPO &#8212; Blogs</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '05_Policy_Gradient_PPO_GRPO';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Blog 02: Flow Matching: The Theory Behind Stable Diffusion - 3." href="02_Flow_Matching_I.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="00_landing_page.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Blogs</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="00_landing_page.html">
+                    Blogs Landing Page
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01_weiner_process.html">Blog 01: SDE, Weiner Process, ITO’s Lemma and Reverse Time Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_Flow_Matching_I.html">Blog 02: Flow Matching: The Theory Behind Stable Diffusion - 3.</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Blog 05: Policy Gradient, TRPO, PPO and GRPO</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/yogheswaran-a/blogs" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/yogheswaran-a/blogs/issues/new?title=Issue%20on%20page%20%2F05_Policy_Gradient_PPO_GRPO.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/05_Policy_Gradient_PPO_GRPO.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Blog 05: Policy Gradient, TRPO, PPO and GRPO</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">Motivation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-rewards">Understanding Rewards</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#why-do-we-use-a-discount-factor">Why Do We Use a Discount Factor?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-if-gamma-1">What if <span class="math notranslate nohighlight">\(\gamma = 1\)</span>?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-if-the-episode-never-ends">What if the Episode Never Ends?</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#notations">Notations</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-gardient-algo-derivation">Policy Gardient Algo derivation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-gradient-step-by-step-derivation">Policy Gradient: step-by-step derivation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#variance-reduction-with-a-baseline">Variance reduction with a baseline</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-this-means">What this means</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#value-functions-action-value-functions-and-advantage-funtion">Value Functions, Action-Value Functions And Advantage Funtion</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#state-value-function-v-pi-s">State Value Function  <span class="math notranslate nohighlight">\(V^\pi(s)\)</span></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#action-value-function-q-pi-s-a">Action-Value Function  <span class="math notranslate nohighlight">\(Q^\pi(s, a)\)</span></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-advantage-function-a-pi-s-a">The Advantage Function  <span class="math notranslate nohighlight">\(A^\pi(s, a)\)</span></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#alternate-forms-of-policy-gradient">Alternate Forms of Policy gradient</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trust-region-policy-optimization-trpo">Trust Region Policy Optimization(TRPO)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-core-problem-a-step-too-far">The Core Problem: A Step Too Far</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-trpo-trick-a-local-approximation">The TRPO Trick: A Local Approximation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-trust-region-keeping-it-close">The Trust Region: Keeping it Close</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#putting-it-all-together-the-practical-algorithm">Putting It All Together: The Practical Algorithm</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-pros-and-cons">The Pros And Cons</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-few-more-words">A Few More Words.</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#proximal-policy-optimization-algorithm-ppo">Proximal Policy Optimization Algorithm, PPO</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#idea-1-turn-the-constraint-into-a-penalty">Idea 1: Turn the Constraint into a Penalty</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#idea-2-the-main-one-the-clipped-objective">Idea 2 (The Main One): The Clipped Objective</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-1-advantage-a-t-is-positive-it-was-a-good-action">Case 1: Advantage <span class="math notranslate nohighlight">\(A_t\)</span> is POSITIVE (It was a good action)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-2-advantage-a-t-is-negative-it-was-a-bad-action">Case 2: Advantage <span class="math notranslate nohighlight">\(A_t\)</span> is NEGATIVE (It was a bad action)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-we-take-the-full-uncapped-penalty">Why We Take the Full Uncapped Penalty?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo-the-algorithm">PPO The Algorithm</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="blog-05-policy-gradient-trpo-ppo-and-grpo">
+<h1>Blog 05: Policy Gradient, TRPO, PPO and GRPO<a class="headerlink" href="#blog-05-policy-gradient-trpo-ppo-and-grpo" title="Link to this heading">#</a></h1>
+<section id="motivation">
+<h2>Motivation<a class="headerlink" href="#motivation" title="Link to this heading">#</a></h2>
+<hr style="border: 1.5px solid #000; margin-top: 20px; margin-bottom: 20px;">
+I wrote this blog as I was trying to understand the algo, math and code behind the GRPO and PPO. The main goal is to recreate the aha moment from the deepseek r1 paper. This is a two part series blog. Part one covers the alogirthms and math behind the PPO and GRPO, understand the core ideas, the math that drives them, and why GRPO works the way it does. In part two I am going to fine tune a pre trained LLM using GRPO to recreate the "aha Moment" from deep seek R1 from scratch. So, yeah, we are going to reap the rewards in part II.
+</section>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
+<hr style="border: 1.5px solid #000; margin-top: 20px; margin-bottom: 20px;">
+<p>The RL setup is like this, we have an agent in an environment which is trying to achieve a goal, it takes action <span class="math notranslate nohighlight">\(a_t\)</span> in a state <span class="math notranslate nohighlight">\(s_t\)</span> according to a policy <span class="math notranslate nohighlight">\(\pi_\theta(a_t\mid s_t)\)</span>, which is parametrized by <span class="math notranslate nohighlight">\(\theta\)</span>, according to the actions it receives a reward <span class="math notranslate nohighlight">\(s_t\)</span>. For example the agent can be a robot trying to learn to walk. Here the enviroment is the surface it is trying to walk on, actions are signal sent to the leg actuators, and the state is the current rotation of its joints, its balance, position, and any sensor readings that describe its posture at time <span class="math notranslate nohighlight">\(t\)</span>.</p>
+<p>Each time the robot takes an action, it transitions to a new state and receives a reward maybe a positive reward for moving forward, or a negative one if it falls over. Over many trials, the goal of reinforcement learning is to adjust the parameters <span class="math notranslate nohighlight">\(θ\)</span> so that the policy <span class="math notranslate nohighlight">\(π_θ\)</span> produces actions, these can be new action(exploration) or an already taken action (explotation), that maximize the robot’s cumulative reward.</p>
+<section id="understanding-rewards">
+<h3>Understanding Rewards<a class="headerlink" href="#understanding-rewards" title="Link to this heading">#</a></h3>
+<hr style="border: 1.5px solid #000; margin-top: 20px; margin-bottom: 20px;">
+<p>In most reinforcement learning problems, we define the return(rewards) from time step <span class="math notranslate nohighlight">\(t\)</span> as:</p>
+<div class="math notranslate nohighlight">
+\[
+G_t = \sum_{k=0}^{T-t-1} \gamma^k r_{t+k}
+\]</div>
+<p>The term <span class="math notranslate nohighlight">\(\gamma\)</span> (the <strong>discount factor</strong>) plays a very important role. It tells the agent <em>how much it should care about the future</em> compared to immediate rewards.</p>
+<section id="why-do-we-use-a-discount-factor">
+<h4>Why Do We Use a Discount Factor?<a class="headerlink" href="#why-do-we-use-a-discount-factor" title="Link to this heading">#</a></h4>
+<p>There are a few reasons why discounting is used:</p>
+<ol class="arabic">
+<li><p><strong>Mathematical stability</strong><br />
+When <span class="math notranslate nohighlight">\(\gamma &lt; 1\)</span>, infinite-horizon sums remain finite.</p></li>
+<li><p><strong>Myopic vs. Far Sighted Behavior</strong><br />
+The discount factor also controls how far into the future the agent should plan. When <span class="math notranslate nohighlight">\(\gamma = 0\)</span>, the agent becomes completely <strong>myopic</strong>  it only cares about the immediate reward, ignoring all future consequences. This can be useful in some settings, but it usually prevents the agent from learning long-term strategies.</p>
+<p>When <span class="math notranslate nohighlight">\(0 &lt; \gamma &lt; 1\)</span>, the agent becomes <strong>far-sighted</strong>. It values future rewards, though slightly less than immediate ones. In this regime, the optimal behavior often involves taking actions that may not yield the highest reward right now but lead to significantly better outcomes later. This is essential in tasks where delayed gratification or strategic planning matters, such as navigation, robotics, or games where early sacrifices lead to long-term wins.</p>
+</li>
+</ol>
+</section>
+<section id="what-if-gamma-1">
+<h4>What if <span class="math notranslate nohighlight">\(\gamma = 1\)</span>?<a class="headerlink" href="#what-if-gamma-1" title="Link to this heading">#</a></h4>
+<p>Sometimes we drop discounting entirely and set:</p>
+<div class="math notranslate nohighlight">
+\[
+\gamma = 1
+\]</div>
+<p>This makes all rewards equally important, no matter how far in the future they occur. This is perfectly valid when:</p>
+<ul class="simple">
+<li><p>episodes naturally end (e.g., games, tasks with a fixed horizon),</p></li>
+<li><p>we care about total cumulative reward without bias toward earlier steps.</p></li>
+</ul>
+<p>In episodic environments, <span class="math notranslate nohighlight">\(\gamma=1\)</span> works fine because <span class="math notranslate nohighlight">\(T\)</span> is finite  the return still has a well-defined sum.</p>
+</section>
+<section id="what-if-the-episode-never-ends">
+<h4>What if the Episode Never Ends?<a class="headerlink" href="#what-if-the-episode-never-ends" title="Link to this heading">#</a></h4>
+<p>Some environments do not have a natural terminal state  for example, many continuous control tasks or real-world robotics. These are called <strong>infinite-horizon</strong> environments.</p>
+<p>In such cases, discounting is <em>necessary</em> unless we impose some artificial limit, because:</p>
+<ul class="simple">
+<li><p>the return <span class="math notranslate nohighlight">\(G_t\)</span> would otherwise be an infinite sum,</p></li>
+<li><p>gradients become unstable,</p></li>
+<li><p>To make agent scarifice immediate reward for overall better return.</p></li>
+</ul>
+<p>Thus for infinite-horizon RL:</p>
+<ul class="simple">
+<li><p>We typically use <span class="math notranslate nohighlight">\(0 &lt; \gamma &lt; 1\)</span></p></li>
+<li><p>Or we truncate the trajectory after a fixed number of steps.</p></li>
+</ul>
+<p>In reinforcement learning, especially when we talk about policy gradient methods, we usually assume an <strong>episodic</strong> setting. That is the after some time the agent can no longer perform actions, think of it as a game coming to end after the player health runs out or time runs out.</p>
+<p>A trajectory of length <span class="math notranslate nohighlight">\(T\)</span> can be written as:</p>
+<div class="math notranslate nohighlight">
+\[
+\tau = (s_0, a_0, r_0,\; s_1, a_1, r_1,\; \ldots,\; s_{T-1}, a_{T-1}, r_{T-1}, s_T)
+\]</div>
+<p>Here:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(s_0\)</span> is sampled from the starting state distribution.</p></li>
+<li><p>Each action <span class="math notranslate nohighlight">\(a_i\)</span> is drawn from the policy <span class="math notranslate nohighlight">\(\pi_\theta(a_i \mid s_i)\)</span>.</p></li>
+<li><p>The next state <span class="math notranslate nohighlight">\(s_{i+1}\)</span> is sampled from the environment dynamics <span class="math notranslate nohighlight">\(P(s_{i+1} \mid s_i, a_i)\)</span>.</p></li>
+</ul>
+<p>We don’t normally have access to the transistion dynamics <span class="math notranslate nohighlight">\(P(s_{i+1} \mid s_i, a_i)\)</span>.</p>
+<p>The Objective of Policy Gradient Methods is to adjust the <span class="math notranslate nohighlight">\(\theta\)</span> of the <span class="math notranslate nohighlight">\(\pi_\theta\)</span> to get high rewards, in other words the agent should take optimal actions. The cost function is:</p>
+<div class="math notranslate nohighlight">
+\[
+J(\theta) = \max_\theta\; \mathbb{E}_{\tau \sim \pi_\theta} \left[ \sum_{t=0}^{T-1} \gamma^t r_t \right]
+\]</div>
+<p>This expectation emphasizes that the return depends on trajectories sampled from the current policy <span class="math notranslate nohighlight">\(\pi_\theta\)</span>.</p>
+</section>
+</section>
+<section id="notations">
+<h3>Notations<a class="headerlink" href="#notations" title="Link to this heading">#</a></h3>
+<p>I will explain each term in the notation as and when it is introduced.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Symbol</strong></p></th>
+<th class="head"><p><strong>Meaning</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(s \in \mathcal{S}\)</span></p></td>
+<td><p>States.</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(a \in \mathcal{A}\)</span></p></td>
+<td><p>Actions.</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(r \in \mathcal{R}\)</span></p></td>
+<td><p>Rewards.</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(S_t, A_t, R_t\)</span></p></td>
+<td><p>State, action, and reward at time step <span class="math notranslate nohighlight">\(t\)</span> of a trajectory. Sometimes written as <span class="math notranslate nohighlight">\(s_t, a_t, r_t\)</span>.</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\gamma\)</span></p></td>
+<td><p>Discount factor; penalizes uncertainty in future rewards; <span class="math notranslate nohighlight">\(0 &lt; \gamma \le 1\)</span>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(G_t\)</span></p></td>
+<td><p>Return; discounted future reward: <span class="math notranslate nohighlight">\(G_t = \sum_{k=0}^{\infty} \gamma^k R_{t+k+1}\)</span>.</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(P(s', r \mid s, a)\)</span></p></td>
+<td><p>Transition probability of arriving at state <span class="math notranslate nohighlight">\(s'\)</span> with reward <span class="math notranslate nohighlight">\(r\)</span> after taking action <span class="math notranslate nohighlight">\(a\)</span> in state <span class="math notranslate nohighlight">\(s\)</span>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\pi(a \mid s)\)</span></p></td>
+<td><p>Stochastic policy (agent behavior); <span class="math notranslate nohighlight">\(\pi_\theta(\cdot)\)</span> is a policy parameterized by <span class="math notranslate nohighlight">\(\theta\)</span>.</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mu(s)\)</span></p></td>
+<td><p>Deterministic policy; sometimes written as <span class="math notranslate nohighlight">\(\pi(s)\)</span>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(V(s)\)</span></p></td>
+<td><p>State-value function: expected return from state <span class="math notranslate nohighlight">\(s\)</span>. <span class="math notranslate nohighlight">\(V_w(\cdot)\)</span> is a value function parameterized by <span class="math notranslate nohighlight">\(w\)</span>.</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(V^\pi(s)\)</span></p></td>
+<td><p>State-value under policy <span class="math notranslate nohighlight">\(\pi\)</span>: <span class="math notranslate nohighlight">\(V^\pi(s) = \mathbb{E}_\pi[G_t \mid S_t = s]\)</span>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(Q(s, a)\)</span></p></td>
+<td><p>Action-value function: expected return from state–action pair <span class="math notranslate nohighlight">\((s, a)\)</span>. <span class="math notranslate nohighlight">\(Q_w(\cdot)\)</span> is parameterized by <span class="math notranslate nohighlight">\(w\)</span>.</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(Q^\pi(s, a)\)</span></p></td>
+<td><p>Action-value under policy <span class="math notranslate nohighlight">\(\pi\)</span>: <span class="math notranslate nohighlight">\(Q^\pi(s, a) = \mathbb{E}_\pi[G_t \mid S_t = s, A_t = a]\)</span>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(A^\pi(s, a)\)</span></p></td>
+<td><p>Advantage function under policy <span class="math notranslate nohighlight">\(\pi\)</span>: <span class="math notranslate nohighlight">\(A^\pi(s, a) = Q^\pi(s, a) - V^\pi(s)\)</span>. Measures how much better an action is compared to the average value of the state.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="policy-gardient-algo-derivation">
+<h2>Policy Gardient Algo derivation<a class="headerlink" href="#policy-gardient-algo-derivation" title="Link to this heading">#</a></h2>
+<hr style="border: 1.5px solid #000; margin-top: 20px; margin-bottom: 20px;">
+<p>If you’re familiar with gradient descent, the update rule here is the same idea. We want to adjust the policy parameters in the direction that increases our objective:</p>
+<div class="math notranslate nohighlight">
+\[
+\theta \leftarrow \theta + \alpha \nabla_\theta J(\theta)
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(J(\theta)\)</span> is:
+$<span class="math notranslate nohighlight">\(
+J(\theta) = \max_\theta\; \mathbb{E}_{\tau \sim \pi_\theta} \left[ \sum_{t=0}^{T-1} \gamma^t r_t \right]
+\)</span>$</p>
+<p>The main challenge  is to compute the gradient and to estimate it from sampled trajectories. Since the objective depends on the transistion dynamics <span class="math notranslate nohighlight">\(P(s_{i+1} \mid s_i, a_i)\)</span>, we cannot directly compute the gradient.</p>
+<section id="policy-gradient-step-by-step-derivation">
+<h3>Policy Gradient: step-by-step derivation<a class="headerlink" href="#policy-gradient-step-by-step-derivation" title="Link to this heading">#</a></h3>
+<hr style="border: 1.5px solid #000; margin-top: 20px; margin-bottom: 20px;">
+<p>Lets derive the gradient of the objective step by step:</p>
+<div class="math notranslate nohighlight">
+\[
+\theta \leftarrow \theta + \alpha \nabla_\theta J(\theta),
+\qquad
+J(\theta) \;=\; \mathbb{E}_{\tau\sim\pi_\theta}\Big[\sum_{t=0}^{T-1}\gamma^t r_t\Big].
+\]</div>
+<p>Let <span class="math notranslate nohighlight">\(p_\theta(\tau)\)</span> be the probability of trajectory <span class="math notranslate nohighlight">\(\tau\)</span></p>
+<p><span class="math notranslate nohighlight">\(\tau = (s_0, a_0, r_0, s_1, a_1, r_1, \ldots, s_{T-1}, a_{T-1}, r_{T-1}, s_T)\)</span></p>
+<p>under policy <span class="math notranslate nohighlight">\(\pi_\theta\)</span> (including the start-state distribution and environment dynamics). Then</p>
+<div class="math notranslate nohighlight">
+\[
+J(\theta) = \int p_\theta(\tau)\, R(\tau)\, d\tau,
+\qquad
+R(\tau)\equiv\sum_{t=0}^{T-1}\gamma^t r_t.
+\]</div>
+<p>Differentiating under the integral :</p>
+<div class="math notranslate nohighlight">
+\[
+\nabla_\theta J(\theta)
+= \nabla_\theta \int p_\theta(\tau) R(\tau)\,d\tau
+= \int \nabla_\theta p_\theta(\tau)\, R(\tau)\, d\tau.
+\]</div>
+<p>Applying the log-derivative trick, Using <span class="math notranslate nohighlight">\(\nabla_\theta p_\theta(\tau) = p_\theta(\tau)\, \nabla_\theta \log p_\theta(\tau)\)</span> to rewrite the gradient as an expectation:</p>
+<div class="math notranslate nohighlight">
+\[
+\nabla_\theta J(\theta)
+= \int p_\theta(\tau)\, \nabla_\theta \log p_\theta(\tau)\, R(\tau)\, d\tau
+= \mathbb{E}_{\tau\sim p_\theta} \big[ R(\tau)\, \nabla_\theta \log p_\theta(\tau)\big].
+\]</div>
+<p>Lets expand the  <span class="math notranslate nohighlight">\(p_\theta(\tau)\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[
+p_\theta(\tau) = \mu(s_0)\prod_{t=0}^{T-1}\pi_\theta(a_t\mid s_t)\, P(s_{t+1}\mid s_t,a_t),
+\]</div>
+<p>What this means is that we start at a state <span class="math notranslate nohighlight">\(s_0\)</span> whose probability is given by <span class="math notranslate nohighlight">\(\log\mu(s_0)\)</span>, from here we take actions according to our policy, then  move to a new state whose probability is given by transition dynamics and again take action and so on. Taking <span class="math notranslate nohighlight">\(log\)</span></p>
+<div class="math notranslate nohighlight">
+\[
+\log p_\theta(\tau) = \log\mu(s_0) + \sum_{t=0}^{T-1}\log\pi_\theta(a_t\mid s_t)
++ \sum_{t=0}^{T-1}\log P(s_{t+1}\mid s_t,a_t).
+\]</div>
+<p>Only the policy terms depend on <span class="math notranslate nohighlight">\(\theta\)</span>. Therefore the gradient simplifies to</p>
+<div class="math notranslate nohighlight">
+\[
+\nabla_\theta \log p_\theta(\tau)
+= \sum_{t=0}^{T-1} \nabla_\theta \log\pi_\theta(a_t\mid s_t).
+\]</div>
+<p>(The gradients of <span class="math notranslate nohighlight">\(\mu\)</span> and <span class="math notranslate nohighlight">\(P\)</span> are zero w.r.t. <span class="math notranslate nohighlight">\(\theta\)</span>.)</p>
+<p>Substituting it into the expectation gives:</p>
+<div class="math notranslate nohighlight">
+\[
+\nabla_\theta J(\theta)
+= \mathbb{E}_{\tau\sim\pi_\theta}\left[ R(\tau)\, \sum_{t=0}^{T-1} \nabla_\theta \log\pi_\theta(a_t\mid s_t)\right].
+\]</div>
+<hr style="border: 1.5px solid #000; margin-top: 20px; margin-bottom: 20px;">
+<p>We have a working formula and algo. But this has high variance because</p>
+<ul class="simple">
+<li><p>We are summing the whole reward and multiplying it with the sum of all the log of actions taken.</p></li>
+<li><p>If we take the same actions again, we might end up in different states depending upon the transistion dynamics, and in return we might get different rewards.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\pi_\theta(a_t/s_t)\)</span> is a probability, And summinng from t = 0 and t = T will have high variance. Same goes for reward.</p></li>
+<li><p>Also we won’t know whether a particular action is good or bad, only if all the combination of actions is good or bad.
+So, in practice this always fails. All the algorithm you see is a way to reduce the variance.</p></li>
+</ul>
+<p>Using the reward-to-go (causality) to reduce variance, Because actions at time <span class="math notranslate nohighlight">\(t\)</span> cannot affect rewards received <em>before</em> <span class="math notranslate nohighlight">\(t\)</span>, we can replace the full return <span class="math notranslate nohighlight">\(R(\tau)\)</span> by the <em>reward-to-go</em> from time <span class="math notranslate nohighlight">\(t\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[
+G_t \;=\; \sum_{k=t}^{T-1}\gamma^{k-t} r_k.
+\]</div>
+<p>Reordering the sums yields the commonly used form</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{\;
+\nabla_\theta J(\theta) \;=\; \mathbb{E}_{\tau\sim\pi_\theta}\Big[ \sum_{t=0}^{T-1} \nabla_\theta\log\pi_\theta(a_t\mid s_t)\; G_t \Big]
+\;}
+\]</div>
+<p>This is the REINFORCE (Monte-Carlo policy gradient) estimator. Intuitively: if the return <em>after</em> action <span class="math notranslate nohighlight">\(a_t\)</span> was high, increase the log-probability of <span class="math notranslate nohighlight">\(a_t\)</span>.</p>
+</section>
+<section id="variance-reduction-with-a-baseline">
+<h3>Variance reduction with a baseline<a class="headerlink" href="#variance-reduction-with-a-baseline" title="Link to this heading">#</a></h3>
+<p>We can subtract any baseline <span class="math notranslate nohighlight">\(b(s_t)\)</span> from <span class="math notranslate nohighlight">\(G_t\)</span> which only depends on state does not depend on <span class="math notranslate nohighlight">\(a_t\)</span> without introducing bias:</p>
+<div class="math notranslate nohighlight">
+\[
+\nabla_\theta J(\theta)
+= \mathbb{E}\Big[\sum_{t} \nabla_\theta\log\pi_\theta(a_t\mid s_t)\,(G_t - b(s_t))\Big].
+\]</div>
+<p>Subtracting a baseline <span class="math notranslate nohighlight">\(b(s_t)\)</span> does <strong>not</strong> change the expected value of the gradient, because the baseline term has <strong>zero expectation</strong>.<br />
+This means it reduces <strong>variance</strong> but does <strong>not</strong> change the mean  so it introduces <strong>no bias</strong>.</p>
+<p>Lets see how,</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbb{E}\left[\, \nabla_\theta \log \pi_\theta(a_t \mid s_t)\; b(s_t) \,\right].
+\]</div>
+<p>Because the baseline <span class="math notranslate nohighlight">\(b(s_t)\)</span> depends only on the state and not the action, we treat it as a constant with respect to the policy’s action distribution:</p>
+<div class="math notranslate nohighlight">
+\[
+= b(s_t)\, \mathbb{E}\left[\, \nabla_\theta \log \pi_\theta(a_t \mid s_t) \,\right].
+\]</div>
+<p>Now evaluating the inner expectation would give us,</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbb{E}_{a \sim \pi_\theta}
+\left[\, \nabla_\theta \log \pi_\theta(a \mid s) \,\right]
+= 
+\nabla_\theta \sum_a \pi_\theta(a \mid s)
+=
+\nabla_\theta 1
+= 0.
+\]</div>
+<p>Therefore:</p>
+<div class="math notranslate nohighlight">
+\[
+b(s_t)\, \mathbb{E}\left[ \nabla_\theta \log \pi_\theta(a_t \mid s_t) \right]
+=
+b(s_t)\cdot 0
+= 0.
+\]</div>
+<p>So the baseline term disappears:</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbb{E}\left[\, \nabla_\theta \log \pi_\theta(a_t \mid s_t)\, b(s_t) \,\right] = 0.
+\]</div>
+<p>Therfore, Subtracting a baseline does <strong>not</strong> change the expected gradient:</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbb{E}\left[
+\nabla_\theta \log \pi_\theta(a_t \mid s_t)\, G_t
+\right]
+=
+\mathbb{E}\left[
+\nabla_\theta \log \pi_\theta(a_t \mid s_t)\, (G_t - b(s_t))
+\right].
+\]</div>
+<section id="what-this-means">
+<h4>What this means<a class="headerlink" href="#what-this-means" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>The <strong>mean</strong> of the gradient estimator stays the same → <strong>no bias</strong></p></li>
+<li><p>The <strong>variance</strong> becomes much lower when <span class="math notranslate nohighlight">\(b(s_t)\)</span> is a good estimate of expected return</p></li>
+<li><p>This is why actor–critic methods use a learned value function <span class="math notranslate nohighlight">\(V(s_t)\)</span> as the baseline(I have not said what a value function and action value functions are, this is a good time to introduce it.)</p></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="value-functions-action-value-functions-and-advantage-funtion">
+<h2>Value Functions, Action-Value Functions And Advantage Funtion<a class="headerlink" href="#value-functions-action-value-functions-and-advantage-funtion" title="Link to this heading">#</a></h2>
+<hr style="border: 1.5px solid #000; margin-top: 20px; margin-bottom: 20px;">
+<p>Since we introduced the baseline <span class="math notranslate nohighlight">\(b(s_t)\)</span> and mentioned that a good choice is the expected return from a state, this is a natural time to define two fundamental concepts in reinforcement learning: the <strong>value function</strong> and the <strong>action-value function</strong>.</p>
+<section id="state-value-function-v-pi-s">
+<h3>State Value Function  <span class="math notranslate nohighlight">\(V^\pi(s)\)</span><a class="headerlink" href="#state-value-function-v-pi-s" title="Link to this heading">#</a></h3>
+<p>The <strong>value function</strong> measures how good it is for the agent to be in a specific state <span class="math notranslate nohighlight">\(s\)</span> while following policy <span class="math notranslate nohighlight">\(\pi\)</span>.</p>
+<p>It is defined as the expected return starting from state <span class="math notranslate nohighlight">\(s\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[
+V^\pi(s) = \mathbb{E}_\pi \left[\, G_t \mid s_t = s \,\right].
+\]</div>
+<p>In words:<br />
+<strong><span class="math notranslate nohighlight">\(V^\pi(s)\)</span> is the expected total discounted reward the agent will get in the future if it starts in state <span class="math notranslate nohighlight">\(s\)</span> and continues following policy <span class="math notranslate nohighlight">\(\pi\)</span>.</strong></p>
+<p>This is often used as a <strong>baseline</strong> to reduce variance in policy gradient methods.</p>
+</section>
+<section id="action-value-function-q-pi-s-a">
+<h3>Action-Value Function  <span class="math notranslate nohighlight">\(Q^\pi(s, a)\)</span><a class="headerlink" href="#action-value-function-q-pi-s-a" title="Link to this heading">#</a></h3>
+<p>The <strong>action-value function</strong> measures how good it is to take action <span class="math notranslate nohighlight">\(a\)</span> in state <span class="math notranslate nohighlight">\(s\)</span> while following policy <span class="math notranslate nohighlight">\(\pi\)</span> thereafter.</p>
+<p>It is defined as:</p>
+<div class="math notranslate nohighlight">
+\[
+Q^\pi(s, a)
+= 
+\mathbb{E}_\pi \left[\, G_t \mid s_t = s,\, a_t = a \,\right].
+\]</div>
+<p>In words:<br />
+<strong><span class="math notranslate nohighlight">\(Q^\pi(s, a)\)</span> is the expected return if we start in state <span class="math notranslate nohighlight">\(s\)</span>, take action <span class="math notranslate nohighlight">\(a\)</span>, and then follow policy <span class="math notranslate nohighlight">\(\pi\)</span> for all future steps.</strong></p>
+</section>
+<section id="the-advantage-function-a-pi-s-a">
+<h3>The Advantage Function  <span class="math notranslate nohighlight">\(A^\pi(s, a)\)</span><a class="headerlink" href="#the-advantage-function-a-pi-s-a" title="Link to this heading">#</a></h3>
+<p>The <strong>advantage function</strong> tells us how much better (or worse) an action is compared to the average action in that state (according to the policy).</p>
+<p>It is defined by subtracting the value function from the action-value function:</p>
+<div class="math notranslate nohighlight">
+\[
+A^\pi(s, a) = Q^\pi(s, a) - V^\pi(s).
+\]</div>
+<p>Interpretation:</p>
+<ul class="simple">
+<li><p>If <span class="math notranslate nohighlight">\(A^\pi(s, a) &gt; 0\)</span> →<br />
+Taking action <span class="math notranslate nohighlight">\(a\)</span> in state <span class="math notranslate nohighlight">\(s\)</span> is <strong>better</strong> than what the agent usually does.</p></li>
+<li><p>If <span class="math notranslate nohighlight">\(A^\pi(s, a) &lt; 0\)</span> →<br />
+The action is <strong>worse</strong> than the policy’s average behavior.</p></li>
+<li><p>If <span class="math notranslate nohighlight">\(A^\pi(s, a) = 0\)</span> →<br />
+The action is <strong>exactly as good</strong> as the value predicted by the policy.</p></li>
+</ul>
+</section>
+</section>
+<section id="alternate-forms-of-policy-gradient">
+<h2>Alternate Forms of Policy gradient<a class="headerlink" href="#alternate-forms-of-policy-gradient" title="Link to this heading">#</a></h2>
+<hr style="border: 1.5px solid #000; margin-top: 20px; margin-bottom: 20px;">
+<p>Coming back to our equation,</p>
+<div class="math notranslate nohighlight">
+\[
+\nabla_\theta J(\theta)
+= \mathbb{E}\Big[\sum_{t} \nabla_\theta\log\pi_\theta(a_t\mid s_t)\,(G_t - b(s_t))\Big].
+\]</div>
+<p>We can rewrite this in several forms. Taken from <a class="reference external" href="https://arxiv.org/abs/1506.02438">High-Dimensional Continuous Control Using Generalized Advantage Estimation paper</a></p>
+<p><img alt="img" src="_images/policygradientgeneral.png" /></p>
+<p>Based on my explanations before, I think one has sufficient tools to understand all the forms shown in the image.</p>
+</section>
+<section id="trust-region-policy-optimization-trpo">
+<h2>Trust Region Policy Optimization(TRPO)<a class="headerlink" href="#trust-region-policy-optimization-trpo" title="Link to this heading">#</a></h2>
+<hr style="border: 1.5px solid #000; margin-top: 20px; margin-bottom: 20px;">
+<p>Note: I won’t derive the TRPO alog, the  <a class="reference external" href="https://arxiv.org/abs/1502.05477">Trust Region Policy Optimization</a> paper is very well written. What I will do is explain the idea, intuition behind each part and provide the math behind the intuition. <strong>TRPO is neccesary to understand where the idea of PPO and GRPO comes from.</strong></p>
+<p>Policy Gradient methods try to adjust the parameters step by step to obtain good actions, they do this in a straightforward way, if an action leads to a good outcome, “nudge” the policy to make that action more likely.</p>
+<p>The problem with this is that with complex, deep neural networks, that “nudge” is unpredictable. A tiny change in the network’s parameters (the policy) can lead to a <em>massive</em> and sometimes catastrophic change in its behavior. Imagine trying to learn cricket, and one tiny tweak to your swing and you miss the ball.</p>
+<p>This is the problem <strong>Trust Region Policy Optimization (TRPO)</strong> set out to solve. While it’s largely been succeeded by its simpler cousin, PPO, TRPO’s core ideas are fundamental to understanding modern RL.</p>
+<section id="the-core-problem-a-step-too-far">
+<h3>The Core Problem: A Step Too Far<a class="headerlink" href="#the-core-problem-a-step-too-far" title="Link to this heading">#</a></h3>
+<p>Let’s start with a key formula from Kakade &amp; Langford (2002). It relates the performance (expected return, <span class="math notranslate nohighlight">\(\eta\)</span>) of a new policy (<span class="math notranslate nohighlight">\(\theta\)</span>) to an old one (<span class="math notranslate nohighlight">\(\theta_{\text{old}}\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[
+\eta(\theta) = \eta(\theta_{\text{old}}) + \mathbb{E}_{s \sim \rho_{\pi_{\theta}}, a \sim \pi_{\theta}} [A^{\pi_{\theta_{\text{old}}}}(s, a)]
+\]</div>
+<p>In plain English: The new policy’s performance is the old policy’s performance <em>plus</em> the average <strong>Advantage</strong> of the new policy’s actions.</p>
+<p>The <strong>Advantage function</strong> (<span class="math notranslate nohighlight">\(A\)</span>) as we saw before is just, How much better is this specific action (<span class="math notranslate nohighlight">\(a\)</span>) in this state (<span class="math notranslate nohighlight">\(s\)</span>) than the average action I would normally take?</p>
+<div class="math notranslate nohighlight">
+\[
+A^{\pi}(s, a) = Q^{\pi}(s, a) - V^{\pi}(s)
+\]</div>
+<p>This formula looks great! To improve our policy, we just need to maximize that second term.</p>
+<p><strong>But there’s a catch.</strong> Look at the expectation <span class="math notranslate nohighlight">\(\mathbb{E}_{s \sim \rho_{\pi_{\theta}}, a \sim \pi_{\theta}}\)</span>. To calculate this, we need to sample states and actions from the <em>new</em> policy… which we don’t have yet! It’s a chicken-and-egg problem.</p>
+</section>
+<section id="the-trpo-trick-a-local-approximation">
+<h3>The TRPO Trick: A Local Approximation<a class="headerlink" href="#the-trpo-trick-a-local-approximation" title="Link to this heading">#</a></h3>
+<p>TRPO’s first big idea is an approximation. What if the new policy is <em>not very different</em> from the old one?</p>
+<p>If they are close, we can assume the states they visit will also be similar. This lets us swap the state distribution (<span class="math notranslate nohighlight">\(\rho_{\pi_{\theta}}\)</span>) with the <em>old</em> one, which we <em>can</em> sample from:</p>
+<div class="math notranslate nohighlight">
+\[
+\eta(\theta) \approx \eta(\theta_{\text{old}}) + \mathbb{E}_{s \sim \rho_{\pi_{\theta_{\text{old}}}}, a \sim \pi_{\theta}} [A^{\pi_{\theta_{\text{old}}}}(s, a)]
+\]</div>
+<p>This is our <strong>surrogate objective function</strong>. It’s not the <em>real</em> objective, but it’s a local approximation that’s much easier to work with. We can maximize this surrogate function, <span class="math notranslate nohighlight">\(J_{\theta_{\text{old}}}(\theta)\)</span>, to improve our policy.</p>
+<p>The local part is key. This approximation only holds if <span class="math notranslate nohighlight">\(\pi_{\theta}\)</span> and <span class="math notranslate nohighlight">\(\pi_{\theta_{\text{old}}}\)</span> are close. If we take too big a step and maximize this surrogate function, we might walk right off a cliff where the approximation is no longer valid, and our <em>real</em> performance tanks.</p>
+</section>
+<section id="the-trust-region-keeping-it-close">
+<h3>The Trust Region: Keeping it Close<a class="headerlink" href="#the-trust-region-keeping-it-close" title="Link to this heading">#</a></h3>
+<p>This brings us to the <strong>main idea</strong>, the <strong>Trust Region</strong>.</p>
+<p>TRPO idea is to maximize this surrogate objective as much as possible, <em>subject to a constraint</em>.</p>
+<p>That constraint is that the new policy can’t stray too far from the old one. We need a way to measure the distance between two policies. In probability, the go-to tool for this is the <strong>Kullback-Leibler (KL) Divergence</strong>.</p>
+<p>The KL divergence, <span class="math notranslate nohighlight">\(D_{\text{KL}}(\pi_{\text{old}} || \pi_{\text{new}})\)</span>, measures how different the new policy’s action distributions are from the old one’s, averaged across all states.</p>
+<p>So, the TRPO optimization problem becomes:</p>
+<p><strong>Maximize</strong> the surrogate objective, but <strong>subject to</strong> the average KL divergence being less than some small value, <span class="math notranslate nohighlight">\(\delta\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[
+\text{maximize}_{\theta} \quad J_{\theta_{\text{old}}}(\theta)
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+\text{subject to} \quad \bar{D}_{\text{KL}}(\pi_{\theta_{\text{old}}} || \pi_{\theta}) \le \delta
+\]</div>
+<p>This <span class="math notranslate nohighlight">\(\delta\)</span> defines our Trust Region, a small sperical like region around our current policy where we trust our approximation to be good. We’re now allowed to find the <em>best possible policy</em> within this safe, trusted bubble.</p>
+</section>
+<section id="putting-it-all-together-the-practical-algorithm">
+<h3>Putting It All Together: The Practical Algorithm<a class="headerlink" href="#putting-it-all-together-the-practical-algorithm" title="Link to this heading">#</a></h3>
+<p>We still have one small problem. Our surrogate objective still samples actions from the new policy (<span class="math notranslate nohighlight">\(a \sim \pi_{\theta}\)</span>). We can fix this with a final trick, the <strong>Importance Sampling</strong> you can find more about this here <a class="reference external" href="https://en.wikipedia.org/wiki/Importance_sampling">important sampling</a>.</p>
+<p>We can sample actions from the <em>old</em> policy (<span class="math notranslate nohighlight">\(a \sim \pi_{\theta_{\text{old}}}\)</span>) as long as we correct for it by multiplying by the ratio of probabilities: <span class="math notranslate nohighlight">\(\frac{\pi_{\theta}(s, a)}{\pi_{\theta_{\text{old}}}(s, a)}\)</span>.</p>
+<p>This gives us the final, practical TRPO objective:</p>
+<div class="math notranslate nohighlight">
+\[
+\text{maximize}_{\theta} \quad \mathbb{E}_{s \sim \rho_{\pi_{\theta_{\text{old}}}}, a \sim \pi_{\theta_{\text{old}}}} \left[ \frac{\pi_{\theta}(s, a)}{\pi_{\theta_{\text{old}}}(s, a)} A^{\pi_{\theta_{\text{old}}}}(s, a) \right]
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+\text{subject to} \quad \bar{D}_{\text{KL}}(\pi_{\theta_{\text{old}}} || \pi_{\theta}) \le \delta
+\]</div>
+</section>
+<section id="the-pros-and-cons">
+<h3>The Pros And Cons<a class="headerlink" href="#the-pros-and-cons" title="Link to this heading">#</a></h3>
+<p><strong>The Pros: Monotonic Improvement.</strong>
+TRPO was revolutionary because it came with a theoretical guarantee. By carefully maximizing a lower bound of the real objective within this trust region, each update is guaranteed (with some assumptions) to <em>improve</em> the policy’s real-world performance. No more unstable collapses!</p>
+<p><strong>The Cons: It’s Complicated.</strong>
+Solving this constrained optimization problem is hard. It requires second-order optimization methods (like the <em>conjugate gradient method</em> which they use in the paper) which are computationally expensive and notoriously difficult to implement.</p>
+</section>
+<section id="a-few-more-words">
+<h3>A Few More Words.<a class="headerlink" href="#a-few-more-words" title="Link to this heading">#</a></h3>
+<p>I really like this paper, a well written paper with self contained explanations and proofs.
+The paper led to <strong>Proximal Policy Optimization (PPO)</strong>, which was also written by John Schulman. PPO takes all the core insights from TRPO, the surrogate objective, the importance sampling, and the need to constrain the policy change, but implements the constraint in a much simpler way (using a clipped objective). This gives PPO most of the stability of TRPO with a much simpler, first-order algorithm that’s far easier to implement.
+Now, Lets jump into PPO.</p>
+</section>
+</section>
+<section id="proximal-policy-optimization-algorithm-ppo">
+<h2>Proximal Policy Optimization Algorithm, PPO<a class="headerlink" href="#proximal-policy-optimization-algorithm-ppo" title="Link to this heading">#</a></h2>
+<hr style="border: 1.5px solid #000; margin-top: 20px; margin-bottom: 20px;">
+<p>PPO is about asking this question, What if we could get 99% of TRPO’s stability with 10% of the complexity?</p>
+<p>It turns out, you can. And that’s why PPO has become the default go-to RL algorithm for a huge range of problems.</p>
+<p>Let’s quickly recap the TRPO objective from your text. The goal was:</p>
+<div class="math notranslate nohighlight">
+\[
+\text{maximize}_{\theta} \quad \mathbb{E}_{s,a \sim \pi_{\theta_{\text{old}}}} \left[ \frac{\pi_{\theta}(a|s)}{\pi_{\theta_{\text{old}}}(a|s)} A^{\pi_{\theta_{\text{old}}}}(s, a) \right]
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+\text{subject to} \quad \bar{D}_{\text{KL}}(\pi_{\theta_{\text{old}}} || \pi_{\theta}) \le \delta
+\]</div>
+<p>It’s a <strong>hard constraint</strong> that is the problem. You can’t just plug this into your Adam optimizer. It requires a whole different, far more complicated optimization toolbox.</p>
+<p>So, how do we get rid of the constraint?</p>
+<section id="idea-1-turn-the-constraint-into-a-penalty">
+<h3>Idea 1: Turn the Constraint into a Penalty<a class="headerlink" href="#idea-1-turn-the-constraint-into-a-penalty" title="Link to this heading">#</a></h3>
+<p>The most common trick in optimization is to move a constraint into the objective function as a penalty. Instead of saying “you <em>can’t</em> go outside this boundary,” you say “if you go outside, it will <em>hurt</em>.”</p>
+<p>This gives us an objective like this (sometimes called PPO-Penalty):</p>
+<div class="math notranslate nohighlight">
+\[
+L(\theta) = \mathbb{E}_t \left[ \frac{\pi_{\theta}(a_t|s_t)}{\pi_{\theta_{\text{old}}}(a_t|s_t)} A_t \right] - \beta \cdot D_{\text{KL}}(\pi_{\theta_{\text{old}}} || \pi_{\theta})
+\]</div>
+<p>Now we just maximize <span class="math notranslate nohighlight">\(L(\theta)\)</span> with regular gradient descent. That <span class="math notranslate nohighlight">\(\beta\)</span> is a coefficient that controls <em>how much</em> we care about the penalty.</p>
+<p><strong>Problem:</strong> This is just introduces a hyperparameter! If <span class="math notranslate nohighlight">\(\beta\)</span> is too low, the policy explodes (violating the trust region). If <span class="math notranslate nohighlight">\(\beta\)</span> is too high, the policy never learns anything (it’s too scared to change). This isn’t much better.</p>
+</section>
+<section id="idea-2-the-main-one-the-clipped-objective">
+<h3>Idea 2 (The Main One): The Clipped Objective<a class="headerlink" href="#idea-2-the-main-one-the-clipped-objective" title="Link to this heading">#</a></h3>
+<p>Let’s define our probability ratio as <span class="math notranslate nohighlight">\(r_t(\theta)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[
+r_t(\theta) = \frac{\pi_{\theta}(a_t|s_t)}{\pi_{\theta_{\text{old}}}(a_t|s_t)}
+\]</div>
+<ul class="simple">
+<li><p>If <span class="math notranslate nohighlight">\(r_t(\theta) &gt; 1\)</span>, the new policy is <em>more</em> likely to take that action.</p></li>
+<li><p>If <span class="math notranslate nohighlight">\(r_t(\theta) &lt; 1\)</span>, the new policy is <em>less</em> likely to take that action.</p></li>
+</ul>
+<p>Our simple objective is just <span class="math notranslate nohighlight">\(\mathbb{E}[r_t(\theta) A_t]\)</span>. The PPO-Clip algorithm proposes a new, clipped objective:</p>
+<div class="math notranslate nohighlight">
+\[
+L^{\text{CLIP}}(\theta) = \mathbb{E}_t \left[ \min \left( r_t(\theta) A_t, \quad \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon) A_t \right) \right]
+\]</div>
+<p>Let’s break it down. <span class="math notranslate nohighlight">\(\epsilon\)</span> (epsilon) is a small hyperparameter(usually <strong>0.2</strong>).
+What this means is we’re clipping the ratio <span class="math notranslate nohighlight">\(r_t\)</span> to be inside the range <span class="math notranslate nohighlight">\([1-\epsilon, 1+\epsilon]\)</span>.</p>
+<p>Let’s analyze the <code class="docutils literal notranslate"><span class="pre">min(...)</span></code> by looking at the two cases for the Advantage <span class="math notranslate nohighlight">\(A_t\)</span>.</p>
+</section>
+<section id="case-1-advantage-a-t-is-positive-it-was-a-good-action">
+<h3>Case 1: Advantage <span class="math notranslate nohighlight">\(A_t\)</span> is POSITIVE (It was a good action)<a class="headerlink" href="#case-1-advantage-a-t-is-positive-it-was-a-good-action" title="Link to this heading">#</a></h3>
+<p>We want to make this action <em>more</em> likely (increase <span class="math notranslate nohighlight">\(r_t\)</span>).</p>
+<ul class="simple">
+<li><p>The objective is <span class="math notranslate nohighlight">\(L = \min(r_t A_t, \text{clip}(r_t, 1-\epsilon, 1+\epsilon) A_t)\)</span>.</p></li>
+<li><p>Since <span class="math notranslate nohighlight">\(A_t &gt; 0\)</span>, the <code class="docutils literal notranslate"><span class="pre">clip</span></code> part becomes <span class="math notranslate nohighlight">\((1+\epsilon) A_t\)</span> if <span class="math notranslate nohighlight">\(r_t\)</span> goes above <span class="math notranslate nohighlight">\(1+\epsilon\)</span>.</p></li>
+<li><p>So, <span class="math notranslate nohighlight">\(L = \min(r_t A_t, (1+\epsilon) A_t)\)</span>.</p></li>
+<li><p><strong>What this means:</strong> As long as <span class="math notranslate nohighlight">\(r_t\)</span> is between <span class="math notranslate nohighlight">\(1-\epsilon\)</span> and <span class="math notranslate nohighlight">\(1+\epsilon\)</span>, <span class="math notranslate nohighlight">\(L = r_t A_t\)</span>. We get the full, normal policy gradient. But if we get too greedy and <span class="math notranslate nohighlight">\(r_t\)</span> shoots up, the objective <em>flattens out</em>. <span class="math notranslate nohighlight">\(L\)</span> becomes <span class="math notranslate nohighlight">\((1+\epsilon) A_t\)</span>. The gradient with respect to <span class="math notranslate nohighlight">\(r_t\)</span> becomes zero.</p></li>
+</ul>
+<p>What this means is that we’re allowed to get the reward, but we’re clipped from getting <em>too</em> much of a good thing. This prevents a huge, destabilizing update.</p>
+<p><img alt="img" src="_images/ppopositiveclip.png" /></p>
+</section>
+<hr class="docutils" />
+<section id="case-2-advantage-a-t-is-negative-it-was-a-bad-action">
+<h3>Case 2: Advantage <span class="math notranslate nohighlight">\(A_t\)</span> is NEGATIVE (It was a bad action)<a class="headerlink" href="#case-2-advantage-a-t-is-negative-it-was-a-bad-action" title="Link to this heading">#</a></h3>
+<p>We want to make this action <em>less</em> likely (decrease <span class="math notranslate nohighlight">\(r_t\)</span>).</p>
+<ul class="simple">
+<li><p>The objective is <span class="math notranslate nohighlight">\(L = \min(r_t A_t, \text{clip}(r_t, 1-\epsilon, 1+\epsilon) A_t)\)</span>.</p></li>
+<li><p>Since <span class="math notranslate nohighlight">\(A_t &lt; 0\)</span>, the <code class="docutils literal notranslate"><span class="pre">clip</span></code> part becomes <span class="math notranslate nohighlight">\((1-\epsilon) A_t\)</span> if <span class="math notranslate nohighlight">\(r_t\)</span> goes below <span class="math notranslate nohighlight">\(1-\epsilon\)</span>.</p></li>
+<li><p>So, <span class="math notranslate nohighlight">\(L = \min(r_t A_t, (1-\epsilon) A_t)\)</span>.</p></li>
+<li><p><strong>Wait, that’s not right.</strong> When <span class="math notranslate nohighlight">\(A_t &lt; 0\)</span>, the <code class="docutils literal notranslate"><span class="pre">min</span></code> function acts differently.</p>
+<ul>
+<li><p>Let <span class="math notranslate nohighlight">\(A_t = -10\)</span>.</p></li>
+<li><p>If <span class="math notranslate nohighlight">\(r_t = 0.5\)</span> (a good update, making it less likely), <span class="math notranslate nohighlight">\(\epsilon = 0.2\)</span>:</p>
+<ul>
+<li><p>Term 1 = <span class="math notranslate nohighlight">\(0.5 \times -10 = -5\)</span></p></li>
+<li><p>Term 2 = <span class="math notranslate nohighlight">\(\text{clip}(0.5, 0.8, 1.2) \times -10 = 0.8 \times -10 = -8\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(L = \min(-5, -8) = -8\)</span>.</p></li>
+</ul>
+</li>
+<li><p>If <span class="math notranslate nohighlight">\(r_t = 1.5\)</span> (a bad update, making it <em>more</em> likely), <span class="math notranslate nohighlight">\(\epsilon = 0.2\)</span>:</p>
+<ul>
+<li><p>Term 1 = <span class="math notranslate nohighlight">\(1.5 \times -10 = -15\)</span></p></li>
+<li><p>Term 2 = <span class="math notranslate nohighlight">\(\text{clip}(1.5, 0.8, 1.2) \times -10 = 1.2 \times -10 = -12\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(L = \min(-15, -12) = -15\)</span>.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img alt="img" src="_images/pponegativeclip.png" /></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">min</span></code> function here creates a <em>pessimistic lower bound</em>.</p>
+<ul class="simple">
+<li><p>When we make a good update (making a bad action less likely, <span class="math notranslate nohighlight">\(r_t &lt; 1\)</span>), the clipping <em>limits</em> how much good we can do, capping our objective at <span class="math notranslate nohighlight">\((1-\epsilon) A_t\)</span>.</p></li>
+<li><p>When we make a bad update (making a bad action <em>more</em> likely, <span class="math notranslate nohighlight">\(r_t &gt; 1\)</span>), we take the <em>full, uncapped penalty</em>.</p></li>
+</ul>
+</section>
+<section id="why-we-take-the-full-uncapped-penalty">
+<h3>Why We Take the Full Uncapped Penalty?<a class="headerlink" href="#why-we-take-the-full-uncapped-penalty" title="Link to this heading">#</a></h3>
+<p>When we we apply the <code class="docutils literal notranslate"><span class="pre">min</span></code> function to the above case:</p>
+<div class="math notranslate nohighlight">
+\[
+L = \min(\text{Term 1}, \text{Term 2})
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+L = \min(-15, -12)
+\]</div>
+<p>Which number is smaller (more negative)? <strong>-15.</strong></p>
+<p>So, the final objective value <span class="math notranslate nohighlight">\(L\)</span> is <strong>-15</strong>, which is the <strong>full, unclipped penalty</strong> (<span class="math notranslate nohighlight">\(r_t A_t\)</span>).</p>
+<p>The optimizer’s job is to <em>maximize</em> this objective. When it sees an objective of -15, it receives a <strong>massive gradient signal</strong> to push the policy <em>away</em> from this update. It’s a very strong “NO, BAD IDEA, GO BACK” signal.</p>
+<p><strong>The clipping is designed to be a “pessimistic” lower bound.</strong></p>
+<ul class="simple">
+<li><p>It <strong>clips the <em>upside</em></strong> (when <span class="math notranslate nohighlight">\(A_t &gt; 0\)</span>) to prevent the policy from getting too greedy and destabilizing itself.</p></li>
+<li><p>It <strong>does NOT clip the <em>downside</em></strong> (when <span class="math notranslate nohighlight">\(A_t &lt; 0\)</span> and <span class="math notranslate nohighlight">\(r_t &gt; 1\)</span>) to ensure that bad updates are punished as strongly as possible, creating a steep wall that shoves the policy back into the safe trust region.</p></li>
+</ul>
+<p>This clever, single line of code effectively <em>replaces</em> the entire complex, second-order constraint of TRPO. It softly guides the policy to stay within the <span class="math notranslate nohighlight">\(\epsilon\)</span> trust region.</p>
+</section>
+<section id="ppo-the-algorithm">
+<h3>PPO The Algorithm<a class="headerlink" href="#ppo-the-algorithm" title="Link to this heading">#</a></h3>
+<p>It’s shockingly simple compared to other on-policy methods.</p>
+<ol class="arabic simple">
+<li><p>Initialize your policy network (actor) and value network (critic).</p></li>
+<li><p><strong>Loop forever:</strong></p></li>
+<li><p><strong>Collect Data:</strong> Let the <em>current</em> policy run in the environment for <span class="math notranslate nohighlight">\(N\)</span> steps (e.g., 2048 steps), and store all the <span class="math notranslate nohighlight">\((s_t, a_t, r_t, s_{t+1})\)</span> transitions.</p></li>
+<li><p><strong>Compute Advantages:</strong> For all <span class="math notranslate nohighlight">\(N\)</span> steps you just collected, compute the target returns <span class="math notranslate nohighlight">\(R_t\)</span> and the advantages <span class="math notranslate nohighlight">\(A_t\)</span> (using GAE, or Generalized Advantage Estimation, is common here).</p></li>
+<li><p><strong>Optimize:</strong> For <span class="math notranslate nohighlight">\(K\)</span> epochs (e.g., 10 epochs):</p>
+<ul class="simple">
+<li><p>Grab a mini-batch of your <span class="math notranslate nohighlight">\(N\)</span> samples.</p></li>
+<li><p>Compute <span class="math notranslate nohighlight">\(r_t(\theta)\)</span> using the <em>current</em> policy and the <em>old</em> policy (the one you used to collect the data).</p></li>
+<li><p>Compute the total loss <span class="math notranslate nohighlight">\(L_{\text{total}}\)</span> using the clipped objective, value loss, and entropy bonus.</p></li>
+<li><p>Perform a single gradient <em>ascent</em> step (since we’re maximizing) with your optimizer (e.g., Adam).</p></li>
+</ul>
+</li>
+<li><p>The policy has now been updated. The new policy becomes the old policy for the next data collection. Go back to Step 2.</p></li>
+</ol>
+<p>That’s it. We collect a big batch of data, then replay that data <span class="math notranslate nohighlight">\(K\)</span> times to update our policy, all while using the <code class="docutils literal notranslate"><span class="pre">clip</span></code> function to keep it from exploding.</p>
+<p>It’s stable, efficient, and easy to code.</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="02_Flow_Matching_I.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Blog 02: Flow Matching: The Theory Behind Stable Diffusion - 3.</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">Motivation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-rewards">Understanding Rewards</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#why-do-we-use-a-discount-factor">Why Do We Use a Discount Factor?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-if-gamma-1">What if <span class="math notranslate nohighlight">\(\gamma = 1\)</span>?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-if-the-episode-never-ends">What if the Episode Never Ends?</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#notations">Notations</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-gardient-algo-derivation">Policy Gardient Algo derivation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-gradient-step-by-step-derivation">Policy Gradient: step-by-step derivation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#variance-reduction-with-a-baseline">Variance reduction with a baseline</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-this-means">What this means</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#value-functions-action-value-functions-and-advantage-funtion">Value Functions, Action-Value Functions And Advantage Funtion</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#state-value-function-v-pi-s">State Value Function  <span class="math notranslate nohighlight">\(V^\pi(s)\)</span></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#action-value-function-q-pi-s-a">Action-Value Function  <span class="math notranslate nohighlight">\(Q^\pi(s, a)\)</span></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-advantage-function-a-pi-s-a">The Advantage Function  <span class="math notranslate nohighlight">\(A^\pi(s, a)\)</span></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#alternate-forms-of-policy-gradient">Alternate Forms of Policy gradient</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trust-region-policy-optimization-trpo">Trust Region Policy Optimization(TRPO)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-core-problem-a-step-too-far">The Core Problem: A Step Too Far</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-trpo-trick-a-local-approximation">The TRPO Trick: A Local Approximation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-trust-region-keeping-it-close">The Trust Region: Keeping it Close</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#putting-it-all-together-the-practical-algorithm">Putting It All Together: The Practical Algorithm</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-pros-and-cons">The Pros And Cons</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-few-more-words">A Few More Words.</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#proximal-policy-optimization-algorithm-ppo">Proximal Policy Optimization Algorithm, PPO</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#idea-1-turn-the-constraint-into-a-penalty">Idea 1: Turn the Constraint into a Penalty</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#idea-2-the-main-one-the-clipped-objective">Idea 2 (The Main One): The Clipped Objective</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-1-advantage-a-t-is-positive-it-was-a-good-action">Case 1: Advantage <span class="math notranslate nohighlight">\(A_t\)</span> is POSITIVE (It was a good action)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-2-advantage-a-t-is-negative-it-was-a-bad-action">Case 2: Advantage <span class="math notranslate nohighlight">\(A_t\)</span> is NEGATIVE (It was a bad action)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-we-take-the-full-uncapped-penalty">Why We Take the Full Uncapped Penalty?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo-the-algorithm">PPO The Algorithm</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Yoghes and The Internet
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
