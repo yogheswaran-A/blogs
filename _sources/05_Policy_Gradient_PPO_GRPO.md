@@ -1,8 +1,12 @@
 # Blog 05: Policy Gradient, TRPO, PPO and GRPO
 
+```{note}
+I would advise anyone interested in reading this blog to read it in light theme mode. 
+```
+
 ## Motivation
 <hr style="border: 1.5px solid #000; margin-top: 20px; margin-bottom: 20px;">
-I wrote this blog as I was trying to understand the algo, math and code behind the GRPO and PPO. The main goal is to recreate the aha moment from the deepseek r1 paper. This is a two part series blog. Part one covers the alogirthms and math behind the PPO and GRPO, understand the core ideas, the math that drives them, and why GRPO works the way it does. In part two I am going to fine tune a pre trained LLM using GRPO to recreate the "aha Moment" from deep seek R1 from scratch. So, yeah, we are going to reap the rewards in part II.
+I wrote this blog as I was trying to understand the algo, math and code behind the GRPO and PPO. The main goal is to recreate the aha moment from the deepseek r1 paper. This is a two part series blog. Part one covers the alogirthms and math behind the PPO and GRPO, understand the core ideas, the math that drives them, and why GRPO works the way it does. In part two I am going to fine tune a pre trained LLM using GRPO from scratch to recreate the "aha Moment" from deep seek R1. So, yeah, we are going to reap the rewards in part II.
 
 ## Introduction
 <hr style="border: 1.5px solid #000; margin-top: 20px; margin-bottom: 20px;">
@@ -570,7 +574,7 @@ $$
 L = \min(-15, -12)
 $$
 
-Which number is smaller (more negative)? **-15.**
+We get **-15.**
 
 So, the final objective value $L$ is **-15**, which is the **full, unclipped penalty** ($r_t A_t$).
 
@@ -584,19 +588,75 @@ This clever, single line of code effectively *replaces* the entire complex, seco
 
 ### PPO The Algorithm
 
-It's shockingly simple compared to other on-policy methods.
+It's a simple algo to implement, 
 
-1.  Initialize your policy network (actor) and value network (critic).
+1.  Initialize your policy network (actor) and value network (called critic which is used to compute the advantage).
 2.  **Loop forever:**
 3.  **Collect Data:** Let the *current* policy run in the environment for $N$ steps (e.g., 2048 steps), and store all the $(s_t, a_t, r_t, s_{t+1})$ transitions.
-4.  **Compute Advantages:** For all $N$ steps you just collected, compute the target returns $R_t$ and the advantages $A_t$ (using GAE, or Generalized Advantage Estimation, is common here).
+4.  **Compute Advantages:** For all $N$ steps you just collected, compute the target returns $R_t$ ($G_t$) and the advantages $A_t$ (using GAE, or Generalized Advantage Estimation, is common here).
 5.  **Optimize:** For $K$ epochs (e.g., 10 epochs):
     * Grab a mini-batch of your $N$ samples.
-    * Compute $r_t(\theta)$ using the *current* policy and the *old* policy (the one you used to collect the data).
-    * Compute the total loss $L_{\text{total}}$ using the clipped objective, value loss, and entropy bonus.
-    * Perform a single gradient *ascent* step (since we're maximizing) with your optimizer (e.g., Adam).
+    * Compute $r_t(\theta)$ using the *current* policy and the *old* policy (the one you used to collect the data).During the first step of Optimize,the current and old policy will be same.
+    * Compute the total loss $L_{\text{total}}$ using the clipped objective.
+    * Perform a single gradient *ascent* step (since we're maximizing) with the optimizer (e.g., Adam).
 6.  The policy has now been updated. The new policy becomes the old policy for the next data collection. Go back to Step 2.
 
-That's it. We collect a big batch of data, then replay that data $K$ times to update our policy, all while using the `clip` function to keep it from exploding.
-
+That's it. 
+In summary we collect a big batch of data, then replay that data $K$ times to update our policy, all while using the `clip` function to keep it from exploding.
 It's stable, efficient, and easy to code.
+
+## What is GRPO? The Algo Used In DeepSeek-r1.
+<hr style="border: 1.5px solid #000; margin-top: 20px; margin-bottom: 20px;">
+
+The core idea of **Generalized/Grouped Reward Policy Optimization (GRPO)**, as implemented in DeepSeek R1, is to achieve the necessary variance reduction for stable policy optimization **without relying on a separate Value Function (Critic) neural network**.
+
+This practical simplification results in two changes compared to the standard PPO objective:
+
+$$
+L_{\text{GRPO-Clip}}(\theta) = \mathbb{E}_t \left[ \min \left( r_t(\theta) A_t, \quad \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon) A_t \right) \right]
+$$
+
+### 1. Eliminating the Critic Network (Which is used for the Advantage Calculation)
+
+In standard **Actor-Critic** methods like PPO, the advantage $A^{\pi_{\text{old}}}(s, a)$ is calculated as the difference between the **Action-Value function** $Q^{\pi_{\text{old}}}(s, a)$ and the **State-Value function** $V^{\pi_{\text{old}}}(s)$:
+
+$$
+A^{\pi_{\text{old}}}(s, a) = Q^{\pi_{\text{old}}}(s, a) - V^{\pi_{\text{old}}}(s)
+$$
+
+Since $Q$ and $V$ are expectations of future rewards, they must be estimated by a **Critic network** that is trained alongside the policy.
+
+**GRPO's approach replaces this estimation with normalization over a sample group.**
+Instead of predicting the value $V(s)$ for every state, GRPO uses the actual collected returns (or rewards) from a batch of rollout samples and normalizes them statistically. This eliminates the burden of training a second network.
+
+* Let $R_g$ be the set of returns (or rewards) collected across the entire group (batch) of samples.
+* The mean ($\mu_g$) and standard deviation ($\sigma_g$) are calculated over this entire group.
+* The **Normalized Advantage** ($A^{\text{Norm}}$) is then calculated for each sample's return $R$:
+
+$$
+A^{\text{Norm}}(R) = \frac{R - \mu_g}{\sigma_g + \epsilon}
+$$
+
+This $A^{\text{Norm}}$ effectively measures how much better or worse a specific return $R$ is compared to the **average performance of the current policy** within that specific batch. This serves the same purpose as $A^{\pi_{\text{old}}}(s, a)$ it signals which actions were relatively good or bad but is derived **purely from statistics**, not a learned estimate.
+
+### 2. The Grouping Element (Policy Rollouts)
+
+The **"GR" (Grouped/Generalized Reward)** element refers to the strategy of collecting samples:
+
+* The policy $\pi_{\theta_{\text{old}}}$ is rolled out multiple times to collect a batch (group) of transitions.
+* This batch is kept fixed while calculating $\mu_g$ and $\sigma_g$.
+* This grouping is crucial because it ensures the calculated $\mu_g$ and $\sigma_g$ provide a **stable baseline for normalization**, smoothing out the high variance inherent in policy gradient methods.
+
+### The GRPO Objective
+
+By using $A^{\text{Norm}}$ as the signal, the PPO objective is simplified to the below form:
+
+$$
+L_{\text{GRPO-Clip}}(\theta) = \mathbb{E}_t \left[ \min \left( r_t(\theta) A^{\text{Norm}}, \quad \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon) A^{\text{Norm}} \right) \right]
+$$
+
+This simplification allows the training process to dedicate its full focus and capacity to optimizing **only the policy network** (no more critic), making it particularly advantageous in scenarios where training a robust Critic is difficult, such is the case for LLM.
+
+
+We have reached the end. Thanks for reading and I hope you have learned something.
+In part two I will a fine train a LLM using GRPO from scratch to recreate the "aha moment". 
