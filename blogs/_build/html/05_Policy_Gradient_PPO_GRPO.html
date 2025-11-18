@@ -417,6 +417,12 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo-the-algorithm">PPO The Algorithm</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-grpo-the-algo-used-in-deepseek-r1">What is GRPO? The Algo Used In DeepSeek-r1.</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#eliminating-the-critic-network-which-is-used-for-the-advantage-calculation">1. Eliminating the Critic Network (Which is used for the Advantage Calculation)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-grouping-element-policy-rollouts">2. The Grouping Element (Policy Rollouts)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-grpo-objective">The GRPO Objective</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -430,10 +436,14 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="blog-05-policy-gradient-trpo-ppo-and-grpo">
 <h1>Blog 05: Policy Gradient, TRPO, PPO and GRPO<a class="headerlink" href="#blog-05-policy-gradient-trpo-ppo-and-grpo" title="Link to this heading">#</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>I would advise anyone interested in reading this blog to read it in light theme mode.</p>
+</div>
 <section id="motivation">
 <h2>Motivation<a class="headerlink" href="#motivation" title="Link to this heading">#</a></h2>
 <hr style="border: 1.5px solid #000; margin-top: 20px; margin-bottom: 20px;">
-I wrote this blog as I was trying to understand the algo, math and code behind the GRPO and PPO. The main goal is to recreate the aha moment from the deepseek r1 paper. This is a two part series blog. Part one covers the alogirthms and math behind the PPO and GRPO, understand the core ideas, the math that drives them, and why GRPO works the way it does. In part two I am going to fine tune a pre trained LLM using GRPO to recreate the "aha Moment" from deep seek R1 from scratch. So, yeah, we are going to reap the rewards in part II.
+I wrote this blog as I was trying to understand the algo, math and code behind the GRPO and PPO. The main goal is to recreate the aha moment from the deepseek r1 paper. This is a two part series blog. Part one covers the alogirthms and math behind the PPO and GRPO, understand the core ideas, the math that drives them, and why GRPO works the way it does. In part two I am going to fine tune a pre trained LLM using GRPO from scratch to recreate the "aha Moment" from deep seek R1. So, yeah, we are going to reap the rewards in part II.
 </section>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
@@ -971,7 +981,7 @@ L = \min(\text{Term 1}, \text{Term 2})
 \[
 L = \min(-15, -12)
 \]</div>
-<p>Which number is smaller (more negative)? <strong>-15.</strong></p>
+<p>We get <strong>-15.</strong></p>
 <p>So, the final objective value <span class="math notranslate nohighlight">\(L\)</span> is <strong>-15</strong>, which is the <strong>full, unclipped penalty</strong> (<span class="math notranslate nohighlight">\(r_t A_t\)</span>).</p>
 <p>The optimizer’s job is to <em>maximize</em> this objective. When it sees an objective of -15, it receives a <strong>massive gradient signal</strong> to push the policy <em>away</em> from this update. It’s a very strong “NO, BAD IDEA, GO BACK” signal.</p>
 <p><strong>The clipping is designed to be a “pessimistic” lower bound.</strong></p>
@@ -983,24 +993,76 @@ L = \min(-15, -12)
 </section>
 <section id="ppo-the-algorithm">
 <h3>PPO The Algorithm<a class="headerlink" href="#ppo-the-algorithm" title="Link to this heading">#</a></h3>
-<p>It’s shockingly simple compared to other on-policy methods.</p>
+<p>It’s a simple algo to implement,</p>
 <ol class="arabic simple">
-<li><p>Initialize your policy network (actor) and value network (critic).</p></li>
+<li><p>Initialize your policy network (actor) and value network (called critic which is used to compute the advantage).</p></li>
 <li><p><strong>Loop forever:</strong></p></li>
 <li><p><strong>Collect Data:</strong> Let the <em>current</em> policy run in the environment for <span class="math notranslate nohighlight">\(N\)</span> steps (e.g., 2048 steps), and store all the <span class="math notranslate nohighlight">\((s_t, a_t, r_t, s_{t+1})\)</span> transitions.</p></li>
-<li><p><strong>Compute Advantages:</strong> For all <span class="math notranslate nohighlight">\(N\)</span> steps you just collected, compute the target returns <span class="math notranslate nohighlight">\(R_t\)</span> and the advantages <span class="math notranslate nohighlight">\(A_t\)</span> (using GAE, or Generalized Advantage Estimation, is common here).</p></li>
+<li><p><strong>Compute Advantages:</strong> For all <span class="math notranslate nohighlight">\(N\)</span> steps you just collected, compute the target returns <span class="math notranslate nohighlight">\(R_t\)</span> (<span class="math notranslate nohighlight">\(G_t\)</span>) and the advantages <span class="math notranslate nohighlight">\(A_t\)</span> (using GAE, or Generalized Advantage Estimation, is common here).</p></li>
 <li><p><strong>Optimize:</strong> For <span class="math notranslate nohighlight">\(K\)</span> epochs (e.g., 10 epochs):</p>
 <ul class="simple">
 <li><p>Grab a mini-batch of your <span class="math notranslate nohighlight">\(N\)</span> samples.</p></li>
-<li><p>Compute <span class="math notranslate nohighlight">\(r_t(\theta)\)</span> using the <em>current</em> policy and the <em>old</em> policy (the one you used to collect the data).</p></li>
-<li><p>Compute the total loss <span class="math notranslate nohighlight">\(L_{\text{total}}\)</span> using the clipped objective, value loss, and entropy bonus.</p></li>
-<li><p>Perform a single gradient <em>ascent</em> step (since we’re maximizing) with your optimizer (e.g., Adam).</p></li>
+<li><p>Compute <span class="math notranslate nohighlight">\(r_t(\theta)\)</span> using the <em>current</em> policy and the <em>old</em> policy (the one you used to collect the data).During the first step of Optimize,the current and old policy will be same.</p></li>
+<li><p>Compute the total loss <span class="math notranslate nohighlight">\(L_{\text{total}}\)</span> using the clipped objective.</p></li>
+<li><p>Perform a single gradient <em>ascent</em> step (since we’re maximizing) with the optimizer (e.g., Adam).</p></li>
 </ul>
 </li>
 <li><p>The policy has now been updated. The new policy becomes the old policy for the next data collection. Go back to Step 2.</p></li>
 </ol>
-<p>That’s it. We collect a big batch of data, then replay that data <span class="math notranslate nohighlight">\(K\)</span> times to update our policy, all while using the <code class="docutils literal notranslate"><span class="pre">clip</span></code> function to keep it from exploding.</p>
-<p>It’s stable, efficient, and easy to code.</p>
+<p>That’s it.
+In summary we collect a big batch of data, then replay that data <span class="math notranslate nohighlight">\(K\)</span> times to update our policy, all while using the <code class="docutils literal notranslate"><span class="pre">clip</span></code> function to keep it from exploding.
+It’s stable, efficient, and easy to code.</p>
+</section>
+</section>
+<section id="what-is-grpo-the-algo-used-in-deepseek-r1">
+<h2>What is GRPO? The Algo Used In DeepSeek-r1.<a class="headerlink" href="#what-is-grpo-the-algo-used-in-deepseek-r1" title="Link to this heading">#</a></h2>
+<hr style="border: 1.5px solid #000; margin-top: 20px; margin-bottom: 20px;">
+<p>The core idea of <strong>Generalized/Grouped Reward Policy Optimization (GRPO)</strong>, as implemented in DeepSeek R1, is to achieve the necessary variance reduction for stable policy optimization <strong>without relying on a separate Value Function (Critic) neural network</strong>.</p>
+<p>This practical simplification results in two changes compared to the standard PPO objective:</p>
+<div class="math notranslate nohighlight">
+\[
+L_{\text{GRPO-Clip}}(\theta) = \mathbb{E}_t \left[ \min \left( r_t(\theta) A_t, \quad \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon) A_t \right) \right]
+\]</div>
+<section id="eliminating-the-critic-network-which-is-used-for-the-advantage-calculation">
+<h3>1. Eliminating the Critic Network (Which is used for the Advantage Calculation)<a class="headerlink" href="#eliminating-the-critic-network-which-is-used-for-the-advantage-calculation" title="Link to this heading">#</a></h3>
+<p>In standard <strong>Actor-Critic</strong> methods like PPO, the advantage <span class="math notranslate nohighlight">\(A^{\pi_{\text{old}}}(s, a)\)</span> is calculated as the difference between the <strong>Action-Value function</strong> <span class="math notranslate nohighlight">\(Q^{\pi_{\text{old}}}(s, a)\)</span> and the <strong>State-Value function</strong> <span class="math notranslate nohighlight">\(V^{\pi_{\text{old}}}(s)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[
+A^{\pi_{\text{old}}}(s, a) = Q^{\pi_{\text{old}}}(s, a) - V^{\pi_{\text{old}}}(s)
+\]</div>
+<p>Since <span class="math notranslate nohighlight">\(Q\)</span> and <span class="math notranslate nohighlight">\(V\)</span> are expectations of future rewards, they must be estimated by a <strong>Critic network</strong> that is trained alongside the policy.</p>
+<p><strong>GRPO’s approach replaces this estimation with normalization over a sample group.</strong>
+Instead of predicting the value <span class="math notranslate nohighlight">\(V(s)\)</span> for every state, GRPO uses the actual collected returns (or rewards) from a batch of rollout samples and normalizes them statistically. This eliminates the burden of training a second network.</p>
+<ul class="simple">
+<li><p>Let <span class="math notranslate nohighlight">\(R_g\)</span> be the set of returns (or rewards) collected across the entire group (batch) of samples.</p></li>
+<li><p>The mean (<span class="math notranslate nohighlight">\(\mu_g\)</span>) and standard deviation (<span class="math notranslate nohighlight">\(\sigma_g\)</span>) are calculated over this entire group.</p></li>
+<li><p>The <strong>Normalized Advantage</strong> (<span class="math notranslate nohighlight">\(A^{\text{Norm}}\)</span>) is then calculated for each sample’s return <span class="math notranslate nohighlight">\(R\)</span>:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[
+A^{\text{Norm}}(R) = \frac{R - \mu_g}{\sigma_g + \epsilon}
+\]</div>
+<p>This <span class="math notranslate nohighlight">\(A^{\text{Norm}}\)</span> effectively measures how much better or worse a specific return <span class="math notranslate nohighlight">\(R\)</span> is compared to the <strong>average performance of the current policy</strong> within that specific batch. This serves the same purpose as <span class="math notranslate nohighlight">\(A^{\pi_{\text{old}}}(s, a)\)</span> it signals which actions were relatively good or bad but is derived <strong>purely from statistics</strong>, not a learned estimate.</p>
+</section>
+<section id="the-grouping-element-policy-rollouts">
+<h3>2. The Grouping Element (Policy Rollouts)<a class="headerlink" href="#the-grouping-element-policy-rollouts" title="Link to this heading">#</a></h3>
+<p>The <strong>“GR” (Grouped/Generalized Reward)</strong> element refers to the strategy of collecting samples:</p>
+<ul class="simple">
+<li><p>The policy <span class="math notranslate nohighlight">\(\pi_{\theta_{\text{old}}}\)</span> is rolled out multiple times to collect a batch (group) of transitions.</p></li>
+<li><p>This batch is kept fixed while calculating <span class="math notranslate nohighlight">\(\mu_g\)</span> and <span class="math notranslate nohighlight">\(\sigma_g\)</span>.</p></li>
+<li><p>This grouping is crucial because it ensures the calculated <span class="math notranslate nohighlight">\(\mu_g\)</span> and <span class="math notranslate nohighlight">\(\sigma_g\)</span> provide a <strong>stable baseline for normalization</strong>, smoothing out the high variance inherent in policy gradient methods.</p></li>
+</ul>
+</section>
+<section id="the-grpo-objective">
+<h3>The GRPO Objective<a class="headerlink" href="#the-grpo-objective" title="Link to this heading">#</a></h3>
+<p>By using <span class="math notranslate nohighlight">\(A^{\text{Norm}}\)</span> as the signal, the PPO objective is simplified to the below form:</p>
+<div class="math notranslate nohighlight">
+\[
+L_{\text{GRPO-Clip}}(\theta) = \mathbb{E}_t \left[ \min \left( r_t(\theta) A^{\text{Norm}}, \quad \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon) A^{\text{Norm}} \right) \right]
+\]</div>
+<p>This simplification allows the training process to dedicate its full focus and capacity to optimizing <strong>only the policy network</strong> (no more critic), making it particularly advantageous in scenarios where training a robust Critic is difficult, such is the case for LLM.</p>
+<p>We have reached the end. Thanks for reading and I hope you have learned something.
+In part two I will a fine train a LLM using GRPO from scratch to recreate the “aha moment”.</p>
 </section>
 </section>
 </section>
@@ -1102,6 +1164,12 @@ L = \min(-15, -12)
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-2-advantage-a-t-is-negative-it-was-a-bad-action">Case 2: Advantage <span class="math notranslate nohighlight">\(A_t\)</span> is NEGATIVE (It was a bad action)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-we-take-the-full-uncapped-penalty">Why We Take the Full Uncapped Penalty?</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo-the-algorithm">PPO The Algorithm</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-grpo-the-algo-used-in-deepseek-r1">What is GRPO? The Algo Used In DeepSeek-r1.</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#eliminating-the-critic-network-which-is-used-for-the-advantage-calculation">1. Eliminating the Critic Network (Which is used for the Advantage Calculation)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-grouping-element-policy-rollouts">2. The Grouping Element (Policy Rollouts)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-grpo-objective">The GRPO Objective</a></li>
 </ul>
 </li>
 </ul>

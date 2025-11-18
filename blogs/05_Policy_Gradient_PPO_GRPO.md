@@ -1,8 +1,12 @@
 # Blog 05: Policy Gradient, TRPO, PPO and GRPO
 
+```{note}
+I would advise anyone interested in reading this blog to read it in light theme mode. 
+```
+
 ## Motivation
 <hr style="border: 1.5px solid #000; margin-top: 20px; margin-bottom: 20px;">
-I wrote this blog as I was trying to understand the algo, math and code behind the GRPO and PPO. The main goal is to recreate the aha moment from the deepseek r1 paper. This is a two part series blog. Part one covers the alogirthms and math behind the PPO and GRPO, understand the core ideas, the math that drives them, and why GRPO works the way it does. In part two I am going to fine tune a pre trained LLM using GRPO to recreate the "aha Moment" from deep seek R1 from scratch. So, yeah, we are going to reap the rewards in part II.
+I wrote this blog as I was trying to understand the algo, math and code behind the GRPO and PPO. The main goal is to recreate the aha moment from the deepseek r1 paper. This is a two part series blog. Part one covers the alogirthms and math behind the PPO and GRPO, understand the core ideas, the math that drives them, and why GRPO works the way it does. In part two I am going to fine tune a pre trained LLM using GRPO from scratch to recreate the "aha Moment" from deep seek R1. So, yeah, we are going to reap the rewards in part II.
 
 ## Introduction
 <hr style="border: 1.5px solid #000; margin-top: 20px; margin-bottom: 20px;">
@@ -601,100 +605,58 @@ That's it.
 In summary we collect a big batch of data, then replay that data $K$ times to update our policy, all while using the `clip` function to keep it from exploding.
 It's stable, efficient, and easy to code.
 
-# Beyond PPO: What is GRPO (Generalized Recursive Policy Optimization)?
+## What is GRPO? The Algo Used In DeepSeek-r1.
+<hr style="border: 1.5px solid #000; margin-top: 20px; margin-bottom: 20px;">
 
-So, we've just seen how Proximal Policy Optimization (PPO) revolutionized the Reinforcement Learning scene. It took the brilliant but complex "trust region" idea from TRPO and made it simple, fast, and easy to implement with a single, clever `clip` function. PPO is stable, reliable, and the go-to algorithm for a huge range of problems.
+The core idea of **Generalized/Grouped Reward Policy Optimization (GRPO)**, as implemented in DeepSeek R1, is to achieve the necessary variance reduction for stable policy optimization **without relying on a separate Value Function (Critic) neural network**.
 
-But... is it perfect?
-
-PPO is still an **approximation**. Its entire objective function is a *local, first-order approximation* of how much our *real* performance will improve. It's like using a tangent line to guess the value of a curve. It's a great guess *very* close to the point you're at, but the further you move, the more your guess drifts from reality.
-
-
-
-The PPO "clip" (or the TRPO "KL constraint") is our safety bubble. It forces our update to stay so small that we're always in the "safe zone" where the tangent line is "good enough."
-
-This begs the question: **What if we could create a *better* surrogate objective?**
-
-What if, instead of a tangent line, we could build a *tighter lower bound*? A function that tracks the *real* performance curve more accurately, even further away from our current policy? If we had that, we could take bigger, smarter, more confident steps, and learn *way* faster.
-
-This is the exact idea behind **Generalized Recursive Policy Optimization (GRPO)**.
-
----
-
-## The "Short-Sighted" Problem of PPO
-
-Let's quickly look at the PPO objective again (the unclipped version, for simplicity):
+This practical simplification results in two changes compared to the standard PPO objective:
 
 $$
-L_{\text{PPO}}(\theta) = \mathbb{E}_{s,a \sim \pi_{\text{old}}} \left[ \frac{\pi_{\theta}(a|s)}{\pi_{\theta_{\text{old}}}(a|s)} A^{\pi_{\text{old}}}(s, a) \right]
+L_{\text{GRPO-Clip}}(\theta) = \mathbb{E}_t \left[ \min \left( r_t(\theta) A_t, \quad \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon) A_t \right) \right]
 $$
 
-The key term is $A^{\pi_{\text{old}}}(s, a)$, the advantage. This advantage is calculated *entirely* from the perspective of the **old policy**. It answers the question:
+### 1. Eliminating the Critic Network (Which is used for the Advantage Calculation)
 
-> "How much better is this new action $a$, assuming I *immediately go back to my old policy* $\pi_{\text{old}}$ right after?"
-
-This is a bit "short-sighted." It only values the *one-step* deviation. We're trying to optimize a *new* policy $\pi_{\theta}$, so why are we only evaluating it based on the *old* one?
-
----
-
-## GRPO's "Far-Sighted" Solution
-
-GRPO proposes a much more ambitious question:
-
-> "How much better is this new action $a$, assuming I follow my **new policy $\pi_{\theta}$ *from now on*?**"
-
-This is a *much* harder question. The answer to this question would be the *true* advantage of the new policy, $A^{\pi_{\theta}}(s, a)$, but we can't compute that because we don't know $\pi_{\theta}$ yet!
-
-This is where the **"Recursive"** part of GRPO comes in.
-
-GRPO builds a new "Generalized" Q-function (and by extension, a new "Generalized" Advantage) that is defined *recursively* in terms of the new policy $\pi_{\theta}$ itself.
-
-This gets mathematically *very* dense, but here's the core intuition.
-
-Let's define a new operator, $\mathcal{T}^{\pi_{\theta}}$, that looks just like the Bellman operator, but it's *parameterized by our new policy $\theta$*. It (roughly) says: "The value of an action is the immediate advantage *plus* the expected *future* value you'd get by following $\pi_{\theta}$ from the next state."
-
-The standard PPO/TRPO objective is like applying this operator just *once*.
-
-GRPO says, "Let's apply this operator recursively, $k$ times!" or even better, "Let's find the *fixed point* of this operator."
-
-This process creates a new "Generalized Advantage," let's call it $A^{\text{G}}(s, a, \theta)$, which is a *much better estimate* of the new policy's *true* advantage. It's "far-sighted" because it *recursively* accounts for the fact that we'll be following the new policy in the future, not just for one step.
-
-### The New (and scarier) GRPO Objective
-
-With this new, more powerful advantage function, we can write a new surrogate objective:
+In standard **Actor-Critic** methods like PPO, the advantage $A^{\pi_{\text{old}}}(s, a)$ is calculated as the difference between the **Action-Value function** $Q^{\pi_{\text{old}}}(s, a)$ and the **State-Value function** $V^{\pi_{\text{old}}}(s)$:
 
 $$
-J_{\text{GRPO}}(\theta) = \mathbb{E}_{s,a \sim \pi_{\text{old}}} \left[ \frac{\pi_{\theta}(a|s)}{\pi_{\theta_{\text{old}}}(a|s)} A^{\text{G}}(s, a, \theta) \right]
+A^{\pi_{\text{old}}}(s, a) = Q^{\pi_{\text{old}}}(s, a) - V^{\pi_{\text{old}}}(s)
 $$
 
-This looks familiar, but **here's the killer catch:** The advantage term $A^{\text{G}}$ *also depends on $\theta$*.
+Since $Q$ and $V$ are expectations of future rewards, they must be estimated by a **Critic network** that is trained alongside the policy.
 
-When we take the gradient $\nabla_\theta J_{\text{GRPO}}(\theta)$, we now have to differentiate through *both* the importance sampling ratio *and* the advantage term. This is known as a **gradient-in-gradient** problem, and it's a *lot* more complex to compute.
+**GRPO's approach replaces this estimation with normalization over a sample group.**
+Instead of predicting the value $V(s)$ for every state, GRPO uses the actual collected returns (or rewards) from a batch of rollout samples and normalizes them statistically. This eliminates the burden of training a second network.
 
----
+* Let $R_g$ be the set of returns (or rewards) collected across the entire group (batch) of samples.
+* The mean ($\mu_g$) and standard deviation ($\sigma_g$) are calculated over this entire group.
+* The **Normalized Advantage** ($A^{\text{Norm}}$) is then calculated for each sample's return $R$:
 
-## GRPO vs. PPO: The Showdown
+$$
+A^{\text{Norm}}(R) = \frac{R - \mu_g}{\sigma_g + \epsilon}
+$$
 
-| Feature | PPO (PPO-Clip) | GRPO |
-| :--- | :--- | :--- |
-| **Surrogate Objective** | A *first-order approximation* (a "tangent line"). | A *tighter, provable lower bound* (a better-fitting curve). |
-| **Core Idea** | Constrain the policy update (with `clip`) to stay where the approximation is valid. | Build a *better approximation* (using recursion) that is valid for longer. |
-| **Sample Efficiency** | Good, but can be cautious. Takes many small steps. | **Theoretically much higher.** Can take bigger, more accurate steps. |
-| **Complexity** | **Very Simple.** A single `clip` function. Uses first-order optimizers (like Adam). | **Extremely Complex.** Requires solving a recursive fixed-point problem *inside* the main optimization loop. |
-| **Analogy** | A trusty Toyota Camry. Reliable, easy to drive, gets you there. | A high-maintenance Formula 1 car. Theoretically faster, but incredibly complex to operate. |
+This $A^{\text{Norm}}$ effectively measures how much better or worse a specific return $R$ is compared to the **average performance of the current policy** within that specific batch. This serves the same purpose as $A^{\pi_{\text{old}}}(s, a)$ it signals which actions were relatively good or bad but is derived **purely from statistics**, not a learned estimate.
 
----
+### 2. The Grouping Element (Policy Rollouts)
 
-## So... Why Isn't Everyone Using GRPO?
+The **"GR" (Grouped/Generalized Reward)** element refers to the strategy of collecting samples:
 
-You can probably guess the answer: **Complexity vs. Practicality.**
+* The policy $\pi_{\theta_{\text{old}}}$ is rolled out multiple times to collect a batch (group) of transitions.
+* This batch is kept fixed while calculating $\mu_g$ and $\sigma_g$.
+* This grouping is crucial because it ensures the calculated $\mu_g$ and $\sigma_g$ provide a **stable baseline for normalization**, smoothing out the high variance inherent in policy gradient methods.
 
-PPO hit a "sweet spot" that is almost impossible to beat. It delivers maybe 90% of the possible performance for 10% of the complexity. That trade-off is a no-brainer for most researchers and engineers.
+### The GRPO Objective
 
-The computational and implementation cost of solving GRPO's recursive objective at *every single update step* is just too high for most practical applications.
+By using $A^{\text{Norm}}$ as the signal, the PPO objective is simplified to the below form:
 
-However, GRPO is a fundamentally important idea. It's part of a family of more advanced algorithms (like MPO, A-TRPO) that are all trying to solve the same problem: "How do we build a *better* model of the policy improvement step?"
+$$
+L_{\text{GRPO-Clip}}(\theta) = \mathbb{E}_t \left[ \min \left( r_t(\theta) A^{\text{Norm}}, \quad \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon) A^{\text{Norm}} \right) \right]
+$$
 
-By understanding GRPO, you're looking at the cutting-edge of policy gradient theory, even if you'll probably still be *using* PPO in your next project.
+This simplification allows the training process to dedicate its full focus and capacity to optimizing **only the policy network** (no more critic), making it particularly advantageous in scenarios where training a robust Critic is difficult, such is the case for LLM.
 
-Would you like to dive into another advanced policy gradient algorithm, like MPO (Maximum a Posteriori Policy Optimization)?
+
+We have reached the end. Thanks for reading and I hope you have learned something.
+In part two I will a fine train a LLM using GRPO from scratch to recreate the "aha moment". 
