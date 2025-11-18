@@ -8,6 +8,15 @@ I would advise anyone interested in reading this blog to read it in light theme 
 <hr style="border: 1.5px solid #000; margin-top: 20px; margin-bottom: 20px;">
 I wrote this blog as I was trying to understand the algo, math and code behind the GRPO and PPO. The main goal is to recreate the aha moment from the deepseek r1 paper. This is a two part series blog. Part one covers the alogirthms and math behind the PPO and GRPO, understand the core ideas, the math that drives them, and why GRPO works the way it does. In part two I am going to fine tune a pre trained LLM using GRPO from scratch to recreate the "aha Moment" from deep seek R1. So, yeah, we are going to reap the rewards in part II.
 
+## Resources
+<hr style="border: 1.5px solid #000; margin-top: 20px; margin-bottom: 20px;">
+I used these resources to learn. 
+
+1. [A awesome blog post covering different policy gradient algos](https://lilianweng.github.io/posts/2018-04-08-policy-gradient/).      
+2. [Trust Region Policy Optimization paper](https://arxiv.org/abs/1502.05477).     
+3. [Proximal Policy Optimization Algorithms paper](https://arxiv.org/abs/1707.06347).
+4. [Deepseek Math paper, which introduced GRPO](https://arxiv.org/pdf/2402.03300).
+
 ## Introduction
 <hr style="border: 1.5px solid #000; margin-top: 20px; margin-bottom: 20px;">
 

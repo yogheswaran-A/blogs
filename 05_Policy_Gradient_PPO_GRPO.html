@@ -374,6 +374,7 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">Motivation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resources">Resources</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-rewards">Understanding Rewards</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#why-do-we-use-a-discount-factor">Why Do We Use a Discount Factor?</a></li>
@@ -444,6 +445,17 @@ document.write(`
 <h2>Motivation<a class="headerlink" href="#motivation" title="Link to this heading">#</a></h2>
 <hr style="border: 1.5px solid #000; margin-top: 20px; margin-bottom: 20px;">
 I wrote this blog as I was trying to understand the algo, math and code behind the GRPO and PPO. The main goal is to recreate the aha moment from the deepseek r1 paper. This is a two part series blog. Part one covers the alogirthms and math behind the PPO and GRPO, understand the core ideas, the math that drives them, and why GRPO works the way it does. In part two I am going to fine tune a pre trained LLM using GRPO from scratch to recreate the "aha Moment" from deep seek R1. So, yeah, we are going to reap the rewards in part II.
+</section>
+<section id="resources">
+<h2>Resources<a class="headerlink" href="#resources" title="Link to this heading">#</a></h2>
+<hr style="border: 1.5px solid #000; margin-top: 20px; margin-bottom: 20px;">
+I used these resources to learn. 
+<ol class="arabic simple">
+<li><p><a class="reference external" href="https://lilianweng.github.io/posts/2018-04-08-policy-gradient/">A awesome blog post covering different policy gradient algos</a>.</p></li>
+<li><p><a class="reference external" href="https://arxiv.org/abs/1502.05477">Trust Region Policy Optimization paper</a>.</p></li>
+<li><p><a class="reference external" href="https://arxiv.org/abs/1707.06347">Proximal Policy Optimization Algorithms paper</a>.</p></li>
+<li><p><a class="reference external" href="https://arxiv.org/pdf/2402.03300">Deepseek Math paper, which introduced GRPO</a>.</p></li>
+</ol>
 </section>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
@@ -1123,6 +1135,7 @@ In part two I will a fine train a LLM using GRPO from scratch to recreate the â€
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">Motivation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resources">Resources</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-rewards">Understanding Rewards</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#why-do-we-use-a-discount-factor">Why Do We Use a Discount Factor?</a></li>
